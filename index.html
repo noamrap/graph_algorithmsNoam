@@ -1,571 +1,210 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ממלכת האלגוריתמים - נועם רפופורט</title>
+    <title>מערכת למידת אלגוריתמים - נועם רפופורט</title>
     <style>
-        /* --- משתנים ועיצוב בסיסי --- */
+        /* --- THEME: DEEP LEARNING (Dark Academia / Cyber) --- */
         :root {
-            --bg-core: #050b14;
-            --bg-panel: #0f172a;
-            --border: #1e293b;
-            --primary: #00f3ff; /* Cyan Neon */
-            --gold: #ffd700; /* Gold */
-            --accent: #ff0055; /* Neon Red */
-            --success: #00ff9d; /* Matrix Green */
-            --text-main: #e2e8f0;
-            --text-dim: #64748b;
+            --bg-core: #0f172a;
+            --bg-sidebar: #1e293b;
+            --border: #334155;
+            --primary: #38bdf8;       /* Sky Blue */
+            --accent: #f472b6;        /* Pink */
+            --highlight: #facc15;     /* Yellow */
+            --success: #4ade80;       /* Green */
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
             --font-ui: 'Segoe UI', system-ui, sans-serif;
             --font-mono: 'Consolas', 'Monaco', monospace;
         }
 
-        * {
-            box-sizing: border-box;
-            outline: none;
-            user-select: none;
-        }
+        * { box-sizing: border-box; outline: none; user-select: none; }
 
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             background-color: var(--bg-core);
             color: var(--text-main);
             font-family: var(--font-ui);
             height: 100vh;
             overflow: hidden;
+            display: grid;
+            grid-template-rows: 1fr;
         }
 
-        /* --- מסך פתיחה (SPLASH SCREEN) --- */
+        /* --- SPLASH SCREEN --- */
         #splash-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at center, #1e293b 0%, #020617 100%);
             z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.8s ease-in-out;
         }
 
         .royal-card {
-            background: rgba(0, 0, 0, 0.6);
-            border: 3px solid var(--gold);
-            padding: 40px 60px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--primary);
+            padding: 50px;
             border-radius: 20px;
             text-align: center;
-            box-shadow: 0 0 50px rgba(255, 215, 0, 0.2);
-            animation: float 4s ease-in-out infinite;
+            box-shadow: 0 0 40px rgba(56, 189, 248, 0.2);
             backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
+            animation: float 6s ease-in-out infinite;
         }
 
-            /* אפקט נוצץ */
-            .royal-card::before {
-                content: '';
-                position: absolute;
-                top: -50%;
-                left: -50%;
-                width: 200%;
-                height: 200%;
-                background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
-                transform: rotate(45deg);
-                animation: shine 3s infinite;
-                pointer-events: none;
-            }
-
-        .crown {
-            font-size: 4rem;
-            display: block;
-            margin-bottom: 10px;
-            animation: spin-crown 6s infinite linear;
+        .royal-title { color: var(--highlight); font-size: 1.5rem; margin-bottom: 10px; letter-spacing: 2px; }
+        .royal-name { 
+            font-size: 3.5rem; font-weight: 900; margin: 0;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-
-        .royal-title {
-            color: var(--gold);
-            font-size: 1.2rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            font-weight: bold;
-            margin-bottom: 10px;
+        .start-btn {
+            margin-top: 30px; padding: 12px 40px; font-size: 1.2rem;
+            background: var(--primary); color: #0f172a; border: none; border-radius: 30px;
+            font-weight: bold; cursor: pointer; transition: transform 0.2s;
         }
+        .start-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--primary); }
 
-        .royal-name {
-            font-size: 3rem;
-            font-weight: 900;
-            margin: 0;
-            background: linear-gradient(to right, #00f3ff, #fff, var(--gold));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
-        }
-
-        .funny-subtitle {
-            color: #aaa;
-            font-style: italic;
-            margin-top: 10px;
-            font-size: 1rem;
-            min-height: 1.5em;
-        }
-
-        .start-btn-large {
-            margin-top: 40px;
-            padding: 15px 50px;
-            font-size: 1.5rem;
-            background: var(--primary);
-            color: #000;
-            border: none;
-            border-radius: 50px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 0 20px var(--primary);
-            transition: all 0.3s;
-        }
-
-            .start-btn-large:hover {
-                transform: scale(1.1);
-                box-shadow: 0 0 40px var(--primary);
-                background: #fff;
-            }
-
-        /* --- הממשק הראשי (APP INTERFACE) --- */
+        /* --- MAIN INTERFACE --- */
         #app-interface {
-            display: none; /* מוסתר בהתחלה */
-            height: 100vh;
-            grid-template-rows: 70px 1fr;
-            opacity: 0;
-            transition: opacity 1s;
+            display: none; height: 100%; opacity: 0; transition: opacity 1s;
+            grid-template-rows: 60px 1fr;
         }
 
-        /* HEADER */
         header {
-            background: rgba(15, 23, 42, 0.95);
-            border-bottom: 1px solid var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 30px;
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
+            background: var(--bg-sidebar);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        .app-logo {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--text-main);
-        }
+        .brand-box { display: flex; flex-direction: column; }
+        .brand-main { font-size: 1.2rem; font-weight: bold; color: white; }
+        .brand-credit { font-size: 0.8rem; color: var(--primary); font-weight: bold; letter-spacing: 1px; }
 
-            .app-logo span {
-                color: var(--primary);
-            }
-
-        .nav-pills {
-            display: flex;
-            gap: 10px;
-        }
-
+        .nav-tabs { display: flex; gap: 8px; }
         .nav-btn {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-dim);
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.2s;
+            background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+            padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; font-size: 0.9rem;
         }
-
-            .nav-btn:hover {
-                color: #fff;
-                border-color: var(--primary);
-            }
-
-            .nav-btn.active {
-                background: rgba(0, 243, 255, 0.15);
-                color: var(--primary);
-                border-color: var(--primary);
-            }
+        .nav-btn:hover { color: #fff; border-color: var(--text-muted); }
+        .nav-btn.active { background: rgba(56, 189, 248, 0.15); color: var(--primary); border-color: var(--primary); }
 
         /* LAYOUT */
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 400px;
-            height: 100%;
-            overflow: hidden;
-        }
+        .main-grid { display: grid; grid-template-columns: 1fr 450px; height: 100%; overflow: hidden; }
 
-        /* STAGE (GRAPH) */
+        /* GRAPH STAGE */
         .stage {
-            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            position: relative;
-            overflow: hidden;
+            background-image: radial-gradient(#334155 1px, transparent 1px);
+            background-size: 30px 30px;
+            position: relative; overflow: hidden;
         }
+        svg { width: 100%; height: 100%; }
 
-        svg {
-            width: 100%;
-            height: 100%;
-            cursor: grab;
-        }
+        .edge { stroke: #475569; stroke-width: 2; transition: 0.3s; }
+        .edge.active { stroke: var(--highlight); stroke-width: 4; }
+        .edge.visited { stroke: var(--primary); opacity: 0.6; }
+        
+        .label-bg { fill: var(--bg-core); stroke: var(--border); rx: 4; }
+        .label-text { fill: var(--text-main); font-size: 12px; font-weight: bold; text-anchor: middle; dominant-baseline: central; font-family: var(--font-mono); }
 
-        /* GRAPH ELEMENTS */
-        .edge {
-            stroke: #334155;
-            stroke-width: 2;
-            transition: 0.3s;
-        }
+        .node-circle { fill: var(--bg-sidebar); stroke: var(--text-muted); stroke-width: 3px; r: 28; transition: 0.3s; }
+        .node-text { fill: white; font-size: 16px; font-weight: bold; text-anchor: middle; dominant-baseline: central; font-family: var(--font-mono); }
+        
+        .badge-text { font-size: 11px; fill: var(--highlight); font-weight: bold; text-anchor: middle; opacity: 0; font-family: var(--font-mono); }
 
-            .edge.active {
-                stroke: var(--gold);
-                stroke-width: 4;
-                filter: drop-shadow(0 0 5px var(--gold));
-            }
-
-            .edge.visited {
-                stroke: var(--primary);
-                opacity: 0.5;
-            }
-
-        .label-bg {
-            fill: var(--bg-core);
-            stroke: var(--border);
-            rx: 4;
-        }
-
-        .label-text {
-            fill: var(--text-main);
-            font-size: 12px;
-            font-family: var(--font-mono);
-            font-weight: bold;
-            text-anchor: middle;
-            dominant-baseline: central;
-        }
-
-        .node-circle {
-            fill: var(--bg-panel);
-            stroke: var(--text-dim);
-            stroke-width: 3px;
-            r: 30;
-            transition: 0.3s;
-        }
-
-        .node-text {
-            fill: white;
-            font-size: 18px;
-            font-weight: bold;
-            font-family: var(--font-mono);
-            text-anchor: middle;
-            dominant-baseline: central;
-        }
-
-        .node-badge {
-            font-size: 11px;
-            fill: var(--gold);
-            font-weight: bold;
-            text-anchor: middle;
-            opacity: 0;
-            transition: 0.3s;
-            font-family: var(--font-mono);
-        }
-
-        .group.active .node-circle {
-            stroke: var(--gold);
-            fill: #3f2e04;
-            transform: scale(1.15);
-        }
-
-        .group.visited .node-circle {
-            stroke: var(--primary);
-            fill: rgba(0, 243, 255, 0.1);
-        }
-
-        .group.finished .node-circle {
-            stroke: var(--success);
-            fill: rgba(0, 255, 157, 0.1);
-        }
-
-        /* SCC Colors */
-        .group[data-scc="0"] .node-circle {
-            stroke: #ff0055;
-        }
-
-        .group[data-scc="1"] .node-circle {
-            stroke: #ffe600;
-        }
-
-        .group[data-scc="2"] .node-circle {
-            stroke: #00ff9d;
-        }
+        .group.active .node-circle { stroke: var(--highlight); fill: #422006; transform: scale(1.15); }
+        .group.visited .node-circle { stroke: var(--primary); fill: #0c4a6e; }
+        .group.finished .node-circle { stroke: var(--success); fill: #064e3b; }
 
         /* SIDEBAR */
         .sidebar {
-            background: var(--bg-panel);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            box-shadow: -5px 0 20px rgba(0,0,0,0.5);
-            z-index: 10;
+            background: var(--bg-sidebar); border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; box-shadow: -5px 0 20px rgba(0,0,0,0.5);
         }
 
-        .panel {
-            padding: 15px;
-            border-bottom: 1px solid var(--border);
-            background: rgba(0,0,0,0.2);
+        .panel-header {
+            padding: 15px; border-bottom: 1px solid var(--border);
+            font-size: 0.9rem; font-weight: bold; color: var(--primary); text-transform: uppercase;
+            display: flex; justify-content: space-between; background: rgba(0,0,0,0.2);
         }
 
-            .panel h3 {
-                margin: 0 0 10px 0;
-                color: var(--primary);
-                font-size: 0.85rem;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-                display: flex;
-                justify-content: space-between;
-            }
-
-        /* DATA STRUCTURES */
-        .ds-items {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            height: 45px;
-            align-items: center;
-            padding-bottom: 5px;
-        }
-
+        /* DATA STRUCT */
+        .ds-container { display: flex; gap: 8px; padding: 10px; overflow-x: auto; height: 60px; align-items: center; }
         .ds-item {
-            min-width: 40px;
-            height: 40px;
-            background: var(--bg-core);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: var(--font-mono);
-            font-weight: bold;
-            font-size: 0.9rem;
-            animation: popIn 0.3s;
+            min-width: 40px; height: 40px; background: var(--bg-core); border: 1px solid var(--border); border-radius: 6px;
+            display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: bold;
+            color: var(--text-main); animation: popIn 0.3s;
         }
+        .ds-item.active { border-color: var(--highlight); color: var(--highlight); transform: translateY(-3px); box-shadow: 0 2px 8px rgba(250, 204, 21, 0.2); }
 
-            .ds-item.active {
-                border-color: var(--gold);
-                color: var(--gold);
-                transform: translateY(-3px);
-                box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
-            }
-
-        /* LOGS */
-        .log-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-            background: #080c14;
-            font-family: var(--font-mono);
-            font-size: 0.9rem;
-            line-height: 1.5;
+        /* EXPLANATION LOG (IMPORTANT) */
+        .log-wrapper { flex: 1; overflow-y: auto; padding: 15px; background: #020617; scroll-behavior: smooth; }
+        .log-card {
+            background: rgba(255,255,255,0.03); border-right: 4px solid transparent;
+            border-radius: 6px; padding: 12px; margin-bottom: 10px;
+            font-size: 0.95rem; line-height: 1.6; animation: slideIn 0.3s;
         }
-
-        .log-entry {
-            margin-bottom: 8px;
-            padding: 8px 10px;
-            border-radius: 4px;
-            background: rgba(255,255,255,0.03);
-            border-right: 3px solid transparent;
-            animation: slideIn 0.2s;
-        }
-
-        .l-info {
-            border-color: var(--text-dim);
-            color: var(--text-dim);
-        }
-
-        .l-act {
-            border-color: var(--primary);
-            color: #befafe;
-            background: rgba(0, 243, 255, 0.05);
-        }
-
-        .l-calc {
-            border-color: var(--gold);
-            color: #fef08a;
-        }
-
-        .l-success {
-            border-color: var(--success);
-            color: #bef264;
-        }
-
-        .l-err {
-            border-color: var(--accent);
-            color: #fca5a5;
-        }
+        .log-card strong { color: #fff; font-family: var(--font-mono); }
+        .log-card .math { color: var(--highlight); font-family: var(--font-mono); background: rgba(250, 204, 21, 0.1); padding: 2px 6px; border-radius: 4px; }
+        
+        .type-info { border-color: var(--text-muted); color: var(--text-muted); font-size: 0.9rem; font-style: italic; }
+        .type-action { border-color: var(--primary); color: #e0f2fe; }
+        .type-calc { border-color: var(--highlight); color: #fef9c3; }
+        .type-success { border-color: var(--success); color: #dcfce7; background: rgba(74, 222, 128, 0.05); }
+        .type-error { border-color: var(--accent); color: #fce7f3; }
 
         /* CONTROLS */
-        .controls {
-            padding: 20px;
-            background: var(--bg-panel);
-            border-top: 1px solid var(--border);
-        }
-
-        .btn-row {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 15px;
-        }
-
+        .controls { padding: 20px; border-top: 1px solid var(--border); background: var(--bg-sidebar); }
+        .slider-row { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; }
+        input[type=range] { width: 65%; cursor: pointer; accent-color: var(--primary); }
+        
+        .btn-row { display: flex; justify-content: center; gap: 15px; }
         .c-btn {
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            color: #fff;
-            transition: 0.2s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border: none; border-radius: 50px; cursor: pointer; font-weight: bold;
+            display: flex; align-items: center; justify-content: center; transition: 0.2s;
+            font-family: var(--font-ui);
         }
+        .btn-play { width: 60px; height: 60px; border-radius: 50%; background: var(--primary); font-size: 1.5rem; box-shadow: 0 0 15px rgba(56, 189, 248, 0.3); }
+        .btn-play:hover { transform: scale(1.1); }
+        
+        .btn-step { padding: 10px 20px; background: var(--bg-core); border: 1px solid var(--text-muted); color: var(--text-main); gap: 8px; }
+        .btn-step:hover { border-color: var(--highlight); color: var(--highlight); }
+        
+        .btn-reset { width: 40px; height: 40px; border-radius: 50%; background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
+        .btn-reset:hover { color: white; border-color: white; }
 
-            .c-btn:active {
-                transform: scale(0.95);
-            }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
 
-        .btn-play {
-            background: var(--primary);
-            color: #000;
-            width: 65px;
-            height: 65px;
-            font-size: 1.8rem;
-        }
-
-            .btn-play:hover {
-                box-shadow: 0 0 25px var(--primary);
-            }
-
-        .btn-step {
-            background: var(--bg-core);
-            border: 2px solid var(--text-dim);
-            color: var(--text-main);
-        }
-
-            .btn-step:hover {
-                border-color: var(--gold);
-                color: var(--gold);
-                box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
-            }
-
-        .btn-reset {
-            width: 40px;
-            height: 40px;
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-dim);
-            font-size: 1rem;
-        }
-
-            .btn-reset:hover {
-                color: #fff;
-                border-color: #fff;
-            }
-
-        .slider-container {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            color: var(--text-dim);
-        }
-
-        input[type=range] {
-            width: 60%;
-            accent-color: var(--primary);
-            cursor: pointer;
-        }
-
-        /* ANIMATIONS */
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-15px);
-            }
-        }
-
-        @keyframes shine {
-            0% {
-                left: -100%;
-            }
-
-            100% {
-                left: 100%;
-            }
-        }
-
-        @keyframes spin-crown {
-            0% {
-                transform: rotateY(0deg);
-            }
-
-            100% {
-                transform: rotateY(360deg);
-            }
-        }
-
-        @keyframes popIn {
-            from {
-                transform: scale(0);
-            }
-
-            to {
-                transform: scale(1);
-            }
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
     </style>
 </head>
 <body>
 
     <div id="splash-screen">
-        <div class="royal-card" onclick="changeJoke()">
-            <div class="crown">👑</div>
-            <div class="royal-title">השליט הבלתי מעורער</div>
-            <h2 class="royal-name">נועם רפופורט</h2>
-            <div class="funny-subtitle" id="jokeText">ממיין מערכים במבט בלבד...</div>
-            <button class="start-btn-large" onclick="startApp()">התחל ללמוד 🚀</button>
+        <div class="royal-card">
+            <div class="royal-title">מעבדת האלגוריתמים</div>
+            <h1 class="royal-name">נועם רפופורט</h1>
+            <p style="color:#aaa; margin-top:15px; font-size:1.1rem;">ההסברים שהמורה רצתה, והעיצוב שמגיע לך.</p>
+            <button class="start-btn" onclick="startApp()">התחל ללמוד 🎓</button>
         </div>
-        <p style="margin-top:20px; color: #555; font-size: 0.8rem;">לחץ על הכרטיס להחלפת עובדה</p>
     </div>
 
     <div id="app-interface">
         <header>
-            <div class="app-logo">Algo<span>Lab</span> Pro</div>
-            <div class="nav-pills">
+            <div class="brand-box">
+                <span class="brand-main">AlgoLab Pro</span>
+                <span class="brand-credit">נועם רפופורט © 2025</span>
+            </div>
+            <div class="nav-tabs">
                 <button class="nav-btn active" onclick="app.load('Dijkstra')">Dijkstra</button>
                 <button class="nav-btn" onclick="app.load('BFS')">BFS</button>
                 <button class="nav-btn" onclick="app.load('DFS')">DFS</button>
                 <button class="nav-btn" onclick="app.load('SCC')">SCC</button>
                 <button class="nav-btn" onclick="app.load('DAG')">DAG</button>
-                <button class="nav-btn" onclick="app.load('Bellman')">Bellman-Ford</button>
+                <button class="nav-btn" onclick="app.load('Bellman')">Bellman</button>
             </div>
         </header>
 
@@ -573,12 +212,8 @@
             <div class="stage">
                 <svg id="svgLayer">
                     <defs>
-                        <marker id="arrow" markerWidth="10" markerHeight="7" refX="32" refY="3.5" orient="auto">
-                            <polygon points="0 0, 10 3.5, 0 7" fill="#334155" />
-                        </marker>
-                        <marker id="arrow-active" markerWidth="10" markerHeight="7" refX="32" refY="3.5" orient="auto">
-                            <polygon points="0 0, 10 3.5, 0 7" fill="#ffd700" />
-                        </marker>
+                        <marker id="arrow" markerWidth="10" markerHeight="7" refX="32" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#475569"/></marker>
+                        <marker id="arrow-active" markerWidth="10" markerHeight="7" refX="32" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#facc15"/></marker>
                     </defs>
                     <g id="g-edges"></g>
                     <g id="g-nodes"></g>
@@ -586,24 +221,32 @@
             </div>
 
             <div class="sidebar">
-                <div class="panel">
-                    <h3><span id="dsTitle">מבנה נתונים</span> <small style="opacity:0.5">LIVE</small></h3>
-                    <div class="ds-items" id="dsContainer"></div>
+                
+                <div style="border-bottom: 1px solid var(--border);">
+                    <div class="panel-header">
+                        <span id="dsTitle">מבנה נתונים</span>
+                    </div>
+                    <div class="ds-container" id="dsCont"></div>
                 </div>
 
-                <div class="log-container" id="logBox">
-                    <div class="log-entry l-info">ברוך הבא למעבדה. בחר אלגוריתם והתחל לרוץ.</div>
+                <div class="panel-header">
+                    <span>לוח הסברים וחישובים</span>
+                    <span style="font-size:0.7rem; cursor:pointer; color:var(--text-muted)" onclick="app.clearLog()">נקה</span>
+                </div>
+                
+                <div class="log-wrapper" id="logBox">
+                    <div class="log-card type-info">ברוכים הבאים! בחר אלגוריתם למעלה.<br>ההסברים יופיעו כאן בזמן אמת.</div>
                 </div>
 
                 <div class="controls">
-                    <div class="slider-container">
-                        <span>מהירות אנימציה</span>
+                    <div class="slider-row">
+                        <span>מהירות למידה</span>
                         <input type="range" id="speedRange" min="100" max="2000" value="1000" step="100" dir="ltr">
                     </div>
                     <div class="btn-row">
                         <button class="c-btn btn-reset" onclick="app.reset()" title="איפוס">↺</button>
                         <button class="c-btn btn-play" id="playBtn" onclick="app.toggleAuto()" title="אוטומטי">▶</button>
-                        <button class="c-btn btn-step" onclick="app.manualStep()" title="צעד ידני">➜</button>
+                        <button class="c-btn btn-step" onclick="app.manualStep()">צעד הבא ➜</button>
                     </div>
                 </div>
             </div>
@@ -611,69 +254,40 @@
     </div>
 
     <script>
-        /* --- JOKES & SPLASH LOGIC --- */
-        const jokes = [
-            "מחשב מסלול קצר למקרר...",
-            "פתר את P=NP בהפסקת קפה",
-            "Dijkstra ביקש ממנו עזרה בשיעורי בית",
-            "רץ בסיבוכיות O(1)",
-            "האיש, האגדה, והקודקוד",
-            "לא צריך GPS, יש לו BFS",
-            "מכיר את כל המעגלים השליליים בשכונה"
-        ];
-
-        function changeJoke() {
-            const el = document.getElementById('jokeText');
-            el.style.opacity = 0;
-            setTimeout(() => {
-                el.innerText = jokes[Math.floor(Math.random() * jokes.length)];
-                el.style.opacity = 1;
-            }, 200);
-        }
-        setInterval(changeJoke, 4000);
-
-        function startApp() {
-            const splash = document.getElementById('splash-screen');
-            const app = document.getElementById('app-interface');
-
-            splash.style.opacity = '0';
-            splash.style.transform = 'scale(1.1)';
-
-            setTimeout(() => {
-                splash.style.display = 'none';
-                app.style.display = 'grid';
-                // Trigger reflow
-                void app.offsetWidth;
-                app.style.opacity = '1';
-            }, 800);
-        }
-
-        /* --- APP LOGIC --- */
+        /* --- DATA --- */
         const SCENARIOS = {
-            GENERAL: {
-                nodes: [0, 1, 2, 3, 4, 5],
+            GENERAL: { // Generic graph
+                nodes: [0,1,2,3,4,5],
                 edges: [
-                    { u: 0, v: 1, w: 5 }, { u: 0, v: 2, w: 2 }, { u: 1, v: 2, w: 6 }, { u: 1, v: 3, w: 1 }, { u: 1, v: 4, w: 10 },
-                    { u: 2, v: 3, w: 9 }, { u: 2, v: 4, w: 1 }, { u: 3, v: 4, w: 7 }, { u: 3, v: 5, w: 1 }, { u: 4, v: 5, w: 5 }, { u: 5, v: 1, w: 2 }
+                    {u:0,v:1,w:5},{u:0,v:2,w:2},{u:1,v:2,w:6},{u:1,v:3,w:1},{u:1,v:4,w:10},
+                    {u:2,v:3,w:9},{u:2,v:4,w:1},{u:3,v:4,w:7},{u:3,v:5,w:1},{u:4,v:5,w:5},{u:5,v:1,w:2}
                 ],
-                pos: { 0: { x: 100, y: 300 }, 1: { x: 300, y: 150 }, 2: { x: 300, y: 450 }, 3: { x: 600, y: 150 }, 4: { x: 600, y: 450 }, 5: { x: 800, y: 300 } }
+                pos: {0:{x:100,y:300},1:{x:300,y:150},2:{x:300,y:450},3:{x:600,y:150},4:{x:600,y:450},5:{x:800,y:300}}
             },
-            DAG: { // מהקובץ גמ"ל
-                nodes: [0, 1, 2, 3, 4, 5],
+            DAG: { // From PDF (Topological Sort needed)
+                nodes: [0,1,2,3,4,5],
                 edges: [
-                    { u: 0, v: 1, w: 2 }, { u: 0, v: 2, w: 6 }, { u: 1, v: 2, w: 7 }, { u: 1, v: 3, w: 4 }, { u: 1, v: 4, w: 2 },
-                    { u: 2, v: 3, w: -1 }, { u: 2, v: 4, w: 1 }, { u: 3, v: 4, w: -2 }, { u: 4, v: 5, w: 2 }
+                    {u:0,v:1,w:2},{u:0,v:2,w:6},{u:1,v:2,w:7},{u:1,v:3,w:4},{u:1,v:4,w:2},
+                    {u:2,v:3,w:-1},{u:2,v:4,w:1},{u:3,v:4,w:-2},{u:4,v:5,w:2}
                 ],
-                pos: { 0: { x: 80, y: 300 }, 1: { x: 250, y: 150 }, 2: { x: 250, y: 450 }, 3: { x: 500, y: 150 }, 4: { x: 500, y: 450 }, 5: { x: 700, y: 300 } }
+                pos: {0:{x:80,y:300},1:{x:250,y:150},2:{x:250,y:450},3:{x:500,y:150},4:{x:500,y:450},5:{x:700,y:300}}
             },
-            BELLMAN: { // מקובץ בלמן-פורד
-                nodes: [1, 2, 3, 4],
+            BELLMAN: { // From PDF (Negative Edges)
+                nodes: [1,2,3,4],
                 edges: [
-                    { u: 1, v: 2, w: 4 }, { u: 1, v: 3, w: 2 }, { u: 2, v: 3, w: 1 }, { u: 3, v: 2, w: 1 }, { u: 2, v: 4, w: 4 }, { u: 3, v: 4, w: 2 }, { u: 4, v: 2, w: -2 }
+                    {u:1,v:2,w:4},{u:1,v:3,w:2},{u:2,v:3,w:1},{u:3,v:2,w:1},
+                    {u:2,v:4,w:4},{u:3,v:4,w:2},{u:4,v:2,w:-2}
                 ],
-                pos: { 1: { x: 150, y: 300 }, 2: { x: 450, y: 150 }, 3: { x: 450, y: 450 }, 4: { x: 750, y: 300 } }
+                pos: {1:{x:150,y:300},2:{x:450,y:150},3:{x:450,y:450},4:{x:750,y:300}}
             }
         };
+
+        function startApp() {
+            const s = document.getElementById('splash-screen');
+            const a = document.getElementById('app-interface');
+            s.style.opacity = 0;
+            setTimeout(() => { s.style.display = 'none'; a.style.display = 'grid'; setTimeout(()=>a.style.opacity=1, 50); }, 800);
+        }
 
         class App {
             constructor() {
@@ -682,54 +296,50 @@
                 this.gen = null;
                 this.isPlaying = false;
                 this.timer = null;
-
-                this.els = {
+                
+                this.ui = {
                     edges: document.getElementById('g-edges'),
                     nodes: document.getElementById('g-nodes'),
                     log: document.getElementById('logBox'),
-                    ds: document.getElementById('dsContainer'),
+                    ds: document.getElementById('dsCont'),
                     dsTitle: document.getElementById('dsTitle'),
                     playBtn: document.getElementById('playBtn'),
                     speed: document.getElementById('speedRange')
                 };
-
+                
                 this.initGraph();
             }
 
             load(name) {
                 this.algo = name;
-                // UI Updates
                 document.querySelectorAll('.nav-btn').forEach(b => {
                     b.classList.remove('active');
-                    if (b.innerText === name) b.classList.add('active');
+                    if(b.textContent === name) b.classList.add('active');
                 });
 
-                // Scenario Switch
-                if (name === 'Bellman') this.graph = SCENARIOS.BELLMAN;
-                else if (name === 'DAG') this.graph = SCENARIOS.DAG;
+                if(name === 'Bellman') this.graph = SCENARIOS.BELLMAN;
+                else if(name === 'DAG') this.graph = SCENARIOS.DAG;
                 else this.graph = SCENARIOS.GENERAL;
 
                 this.reset();
             }
 
-            /* --- VISUALIZATION --- */
+            /* --- VISUALS --- */
             initGraph() {
-                this.els.edges.innerHTML = '';
-                this.els.nodes.innerHTML = '';
+                this.ui.edges.innerHTML = '';
+                this.ui.nodes.innerHTML = '';
 
-                // Edges
                 this.graph.edges.forEach(e => {
                     const u = this.graph.pos[e.u], v = this.graph.pos[e.v];
                     const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
                     g.innerHTML = `
-                            <line x1="${u.x}" y1="${u.y}" x2="${v.x}" y2="${v.y}" class="edge" id="e-${e.u}-${e.v}" marker-end="url(#arrow)"></line>
-                            <rect x="${(u.x + v.x) / 2 - 10}" y="${(u.y + v.y) / 2 - 10}" width="20" height="20" class="label-bg"></rect>
-                            <text x="${(u.x + v.x) / 2}" y="${(u.y + v.y) / 2}" class="label-text">${e.w}</text>
-                        `;
-                    this.els.edges.appendChild(g);
+                        <line x1="${u.x}" y1="${u.y}" x2="${v.x}" y2="${v.y}" class="edge" id="e-${e.u}-${e.v}" marker-end="url(#arrow)"></line>
+                        <rect x="${(u.x+v.x)/2-10}" y="${(u.y+v.y)/2-10}" width="20" height="20" class="label-bg"></rect>
+                        <text x="${(u.x+v.x)/2}" y="${(u.y+v.y)/2}" class="label-text">${e.w}</text>
+                    `;
+                    this.ui.edges.appendChild(g);
                 });
 
-                // Nodes
                 this.graph.nodes.forEach(n => {
                     const p = this.graph.pos[n];
                     const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -737,326 +347,362 @@
                     g.setAttribute("id", `n-${n}`);
                     g.setAttribute("transform", `translate(${p.x},${p.y})`);
                     g.innerHTML = `
-                            <circle class="node-circle"></circle>
-                            <text class="node-text">${n}</text>
-                            <text class="node-badge" id="b-${n}" y="-40"></text>
-                        `;
-                    this.els.nodes.appendChild(g);
+                        <circle class="node-circle"></circle>
+                        <text class="node-text">${n}</text>
+                        <text class="badge-text" id="b-${n}" y="-40"></text>
+                    `;
+                    this.ui.nodes.appendChild(g);
                 });
             }
 
-            log(msg, type = 'l-info') {
-                const d = document.createElement('div');
-                d.className = `log-entry ${type}`;
-                d.innerHTML = msg;
-                this.els.log.appendChild(d);
-                this.els.log.scrollTop = this.els.log.scrollHeight;
+            log(msg, type='type-info') {
+                const div = document.createElement('div');
+                div.className = `log-card ${type}`;
+                div.innerHTML = msg;
+                this.ui.log.appendChild(div);
+                this.ui.log.scrollTop = this.ui.log.scrollHeight;
             }
 
-            updateDS(items, active) {
-                this.els.ds.innerHTML = '';
+            updateDS(items) {
+                this.ui.ds.innerHTML = '';
                 items.forEach(x => {
                     const el = document.createElement('div');
-                    el.className = `ds-item ${x == active ? 'active' : ''}`;
+                    el.className = `ds-item`;
                     el.textContent = x;
-                    this.els.ds.appendChild(el);
+                    this.ui.ds.appendChild(el);
                 });
             }
 
-            hlNode(id, cls) {
+            hlNode(id, state) {
                 const el = document.getElementById(`n-${id}`);
                 el.classList.remove('active', 'visited', 'finished');
-                if (cls) el.classList.add(cls);
+                if(state) el.classList.add(state);
             }
 
             hlEdge(u, v, on) {
                 const el = document.getElementById(`e-${u}-${v}`);
-                if (!el) return;
-                if (on) { el.classList.add('active'); el.setAttribute('marker-end', 'url(#arrow-active)'); }
+                if(!el) return;
+                if(on) { el.classList.add('active'); el.setAttribute('marker-end', 'url(#arrow-active)'); }
                 else { el.classList.remove('active'); el.setAttribute('marker-end', 'url(#arrow)'); }
             }
 
-            badge(id, txt) {
+            badge(id, text) {
                 const el = document.getElementById(`b-${id}`);
-                el.textContent = txt; el.style.opacity = 1;
+                el.textContent = text; el.style.opacity = 1;
             }
 
-            /* --- CONTROLS --- */
+            /* --- CONTROL LOGIC --- */
             reset() {
                 this.stopAuto();
-                this.els.log.innerHTML = '';
+                this.ui.log.innerHTML = '';
                 this.initGraph();
                 this.updateDS([]);
-
-                // Load Generator
-                if (this.algo === 'Dijkstra') this.gen = this.runDijkstra();
-                else if (this.algo === 'BFS') this.gen = this.runBFS();
-                else if (this.algo === 'DFS') this.gen = this.runDFS();
-                else if (this.algo === 'SCC') this.gen = this.runSCC();
-                else if (this.algo === 'DAG') this.gen = this.runDAG();
-                else if (this.algo === 'Bellman') this.gen = this.runBellman();
-
-                this.log(`האלגוריתם <b>${this.algo}</b> נטען.`, 'l-info');
+                
+                if(this.algo === 'Dijkstra') this.gen = this.runDijkstra();
+                else if(this.algo === 'BFS') this.gen = this.runBFS();
+                else if(this.algo === 'DFS') this.gen = this.runDFS();
+                else if(this.algo === 'SCC') this.gen = this.runSCC();
+                else if(this.algo === 'DAG') this.gen = this.runDAG();
+                else if(this.algo === 'Bellman') this.gen = this.runBellman();
+                
+                this.log(`האלגוריתם <strong>${this.algo}</strong> נטען. מוכן להתחלה.`);
             }
 
             toggleAuto() {
-                if (this.isPlaying) this.stopAuto(); else this.startAuto();
+                if(this.isPlaying) this.stopAuto(); else this.startAuto();
             }
 
             startAuto() {
-                if (!this.gen) this.reset();
+                if(!this.gen) this.reset();
                 this.isPlaying = true;
-                this.els.playBtn.innerHTML = '⏸';
+                this.ui.playBtn.textContent = '⏸';
                 this.loop();
             }
 
             stopAuto() {
                 this.isPlaying = false;
                 clearTimeout(this.timer);
-                this.els.playBtn.innerHTML = '▶';
+                this.ui.playBtn.textContent = '▶';
             }
 
             manualStep() {
-                if (this.isPlaying) this.stopAuto();
+                if(this.isPlaying) this.stopAuto();
                 this.step();
             }
 
             step() {
-                if (!this.gen) return false;
+                if(!this.gen) return false;
                 const res = this.gen.next();
-                if (res.done) {
-                    this.stopAuto();
-                    return false;
-                }
+                if(res.done) { this.stopAuto(); return false; }
                 return true;
             }
 
             loop() {
-                if (!this.isPlaying) return;
-                if (this.step()) {
-                    const delay = 2100 - this.els.speed.value;
+                if(!this.isPlaying) return;
+                if(this.step()) {
+                    const delay = 2100 - this.ui.speed.value;
                     this.timer = setTimeout(() => this.loop(), delay);
                 }
             }
 
-            /* --- ALGORITHMS --- */
+            /* --- ALGORITHMS WITH EDUCATIONAL LOGS --- */
+            
             *runDijkstra() {
                 const start = this.graph.nodes[0];
-                this.els.dsTitle.innerText = "Priority Queue";
-                const d = {}, Q = new Set(this.graph.nodes);
-                this.graph.nodes.forEach(n => { d[n] = Infinity; }); d[start] = 0;
-                this.log(`התחלת Dijkstra מצומת ${start}`);
+                this.ui.dsTitle.innerText = "תור עדיפויות (Priority Queue)";
+                const d={}, Q=new Set(this.graph.nodes);
+                this.graph.nodes.forEach(n=>{ d[n]=Infinity; }); d[start]=0;
+                this.badge(start, '0');
+                
+                this.log(`מתחילים ב-<strong>${start}</strong>. אתחול כל המרחקים ל-$\infty$.`);
 
-                while (Q.size) {
-                    let u = null, min = Infinity;
-                    Q.forEach(n => { if (d[n] < min) { min = d[n]; u = n; } });
-                    if (u === null) break;
+                while(Q.size > 0) {
+                    let u=null, min=Infinity;
+                    Q.forEach(n=>{ if(d[n]<min){min=d[n];u=n;} });
+                    
+                    if(u===null) break;
                     Q.delete(u);
-
                     this.hlNode(u, 'active');
                     this.updateDS(Array.from(Q));
-                    this.badge(u, `d:${d[u]}`);
-                    this.log(`נבחר <b>${u}</b> (min:${min})`, 'l-act');
+                    
+                    this.log(`נבחר קודקוד <strong>${u}</strong> כי המרחק אליו הוא המינימלי בתור: <span class="math">${min}</span>.`, 'type-action');
                     yield;
 
-                    const neighbors = this.graph.edges.filter(e => e.u === u);
-                    for (let e of neighbors) {
-                        if (!Q.has(e.v)) continue;
-                        this.hlEdge(u, e.v, true);
+                    const neighbors = this.graph.edges.filter(e=>e.u===u);
+                    for(let e of neighbors) {
+                        if(!Q.has(e.v)) continue;
+                        this.hlEdge(e.u, e.v, true);
+                        
                         const alt = d[u] + e.w;
-                        this.log(`בדיקת שכן ${e.v}: ${d[u]}+${e.w}=${alt}`, 'l-calc');
+                        const currentV = d[e.v] === Infinity ? '∞' : d[e.v];
+                        
+                        this.log(`בודק שכן <strong>${e.v}</strong>.<br>
+                                  המסלול דרך ${u}: <span class="math">${d[u]} + ${e.w} = ${alt}</span>.<br>
+                                  המרחק הישן: <span class="math">${currentV}</span>.`);
                         yield;
-                        if (alt < d[e.v]) {
+
+                        if(alt < d[e.v]) {
                             d[e.v] = alt;
                             this.badge(e.v, `d:${alt}`);
-                            this.log(`עדכון מרחק ל-${e.v} -> ${alt}`, 'l-success');
+                            this.log(`נמצא שיפור! (Relaxation)<br>המרחק ל-<strong>${e.v}</strong> עודכן ל-<span class="math">${alt}</span>.`, 'type-success');
+                        } else {
+                            this.log(`אין שיפור. ${alt} גדול או שווה ל-${currentV}.`);
                         }
-                        this.hlEdge(u, e.v, false);
+                        this.hlEdge(e.u, e.v, false);
                     }
                     this.hlNode(u, 'visited');
                 }
-                this.log("סיום.", 'l-success');
+                this.log("האלגוריתם הסתיים. המרחקים חושבו.", 'type-success');
             }
 
             *runBFS() {
                 const start = this.graph.nodes[0];
-                this.els.dsTitle.innerText = "Queue";
-                const Q = [start], visited = new Set([start]);
-                this.log(`התחלת BFS מ-${start}`);
-                while (Q.length) {
+                this.ui.dsTitle.innerText = "תור (Queue FIFO)";
+                const Q=[start], visited=new Set([start]);
+                this.log(`סריקה לרוחב. מתחילים בתור: [${start}].`);
+
+                while(Q.length) {
                     this.updateDS([...Q]);
                     const u = Q.shift();
                     this.hlNode(u, 'active');
-                    this.log(`שליפה מהתור: <b>${u}</b>`, 'l-act');
+                    this.log(`מוציא את <strong>${u}</strong> מראש התור.`, 'type-action');
                     yield;
-                    const neighbors = this.graph.edges.filter(e => e.u === u).map(e => e.v);
-                    for (let v of neighbors) {
-                        if (!visited.has(v)) {
+
+                    const neighbors = this.graph.edges.filter(e=>e.u===u).map(e=>e.v);
+                    for(let v of neighbors) {
+                        if(!visited.has(v)) {
                             this.hlEdge(u, v, true);
                             visited.add(v); Q.push(v);
                             this.updateDS([...Q]);
-                            this.log(`גילוי שכן ${v}`, 'l-calc');
+                            this.log(`גילוי שכן חדש <strong>${v}</strong> -> הוספה לסוף התור.`, 'type-calc');
                             yield;
                             this.hlEdge(u, v, false);
                         }
                     }
                     this.hlNode(u, 'visited');
                 }
-                this.log("סיום.", 'l-success');
+                this.log("התור ריק. הסריקה הסתיימה.", 'type-success');
             }
 
             *runDFS() {
                 const start = this.graph.nodes[0];
-                this.els.dsTitle.innerText = "Stack";
-                const stack = [start], visited = new Set();
-                this.log(`התחלת DFS מ-${start}`);
-                while (stack.length) {
-                    const u = stack.pop();
-                    if (!visited.has(u)) {
+                this.ui.dsTitle.innerText = "מחסנית (Stack LIFO)";
+                const S=[start], visited=new Set();
+                this.log(`סריקה לעומק. דוחף למחסנית את <strong>${start}</strong>.`);
+
+                while(S.length) {
+                    const u = S.pop();
+                    if(!visited.has(u)) {
                         visited.add(u);
                         this.hlNode(u, 'active');
-                        this.updateDS([...stack, u]);
-                        this.log(`ביקור בצומת <b>${u}</b>`, 'l-act');
+                        this.updateDS([...S, u]);
+                        this.log(`ביקור בצומת <strong>${u}</strong> (הוצאה מהמחסנית).`, 'type-action');
                         yield;
-                        const neighbors = this.graph.edges.filter(e => e.u === u).map(e => e.v).reverse();
-                        for (let v of neighbors) {
-                            if (!visited.has(v)) stack.push(v);
+
+                        const neighbors = this.graph.edges.filter(e=>e.u===u).map(e=>e.v).reverse();
+                        for(let v of neighbors) {
+                            if(!visited.has(v)) S.push(v);
                         }
                         this.hlNode(u, 'visited');
                     }
                 }
-                this.log("סיום.", 'l-success');
-            }
-
-            *runSCC() {
-                this.els.dsTitle.innerText = "Recursion";
-                let ids = {}, low = {}, stack = [], onStack = {}, id = 0, sccCount = 0;
-                const visited = new Set();
-                const that = this;
-                this.log("התחלת SCC (Tarjan)");
-
-                function* dfs(at) {
-                    stack.push(at); onStack[at] = true; visited.add(at);
-                    ids[at] = low[at] = id++;
-                    that.hlNode(at, 'active');
-                    that.badge(at, `L:${low[at]}`);
-                    that.updateDS(stack);
-                    that.log(`Visit ${at} (id:${ids[at]})`, 'l-act');
-                    yield;
-
-                    const neighbors = that.graph.edges.filter(e => e.u === at);
-                    for (let e of neighbors) {
-                        if (!visited.has(e.v)) {
-                            that.hlEdge(at, e.v, true);
-                            yield* dfs(e.v);
-                            low[at] = Math.min(low[at], low[e.v]);
-                            that.badge(at, `L:${low[at]}`);
-                            that.log(`Backtrack ${at}: low updated`, 'l-calc');
-                            that.hlNode(at, 'active');
-                            yield;
-                            that.hlEdge(at, e.v, false);
-                        } else if (onStack[e.v]) {
-                            low[at] = Math.min(low[at], ids[e.v]);
-                            that.badge(at, `L:${low[at]}`);
-                            yield;
-                        }
-                    }
-                    if (ids[at] === low[at]) {
-                        that.log(`SCC Root found at ${at}`, 'l-success');
-                        while (stack.length) {
-                            const node = stack.pop();
-                            onStack[node] = false;
-                            document.getElementById(`n-${node}`).setAttribute('data-scc', sccCount % 3);
-                            that.updateDS(stack);
-                            if (node === at) break;
-                            yield;
-                        }
-                        sccCount++;
-                    }
-                }
-                for (let n of this.graph.nodes) if (!visited.has(n)) yield* dfs(n);
-                this.log(`נמצאו ${sccCount} רכיבים.`, 'l-success');
-            }
-
-            *runDAG() {
-                const start = this.graph.nodes[0];
-                this.els.dsTitle.innerText = "Topo Sort";
-                const inDegree = {}; this.graph.nodes.forEach(n => inDegree[n] = 0);
-                this.graph.edges.forEach(e => inDegree[e.v]++);
-                const q = this.graph.nodes.filter(n => inDegree[n] === 0);
-                const topo = [];
-
-                this.log("שלב 1: מיון טופולוגי");
-                while (q.length) {
-                    const u = q.shift();
-                    topo.push(u);
-                    this.hlNode(u, 'finished');
-                    this.updateDS(topo);
-                    yield;
-                    this.graph.edges.filter(e => e.u === u).forEach(e => {
-                        inDegree[e.v]--;
-                        if (inDegree[e.v] === 0) q.push(e.v);
-                    });
-                }
-                this.log("שלב 2: חישוב מרחקים", 'l-act');
-                this.graph.nodes.forEach(n => this.hlNode(n, ''));
-                const d = {}; this.graph.nodes.forEach(n => d[n] = Infinity); d[start] = 0;
-                this.badge(start, '0');
-
-                for (let u of topo) {
-                    if (d[u] === Infinity) continue;
-                    this.hlNode(u, 'active');
-                    yield;
-                    const neighbors = this.graph.edges.filter(e => e.u === u);
-                    for (let e of neighbors) {
-                        this.hlEdge(u, e.v, true);
-                        if (d[u] + e.w < d[e.v]) {
-                            d[e.v] = d[u] + e.w;
-                            this.badge(e.v, `d:${d[e.v]}`);
-                            this.log(`Relax ${e.v} -> ${d[e.v]}`, 'l-success');
-                        }
-                        yield;
-                        this.hlEdge(u, e.v, false);
-                    }
-                    this.hlNode(u, 'visited');
-                }
-                this.log("סיום.", 'l-success');
+                this.log("המחסנית ריקה. סיום.", 'type-success');
             }
 
             *runBellman() {
                 const start = this.graph.nodes[0];
-                this.els.dsTitle.innerText = "Iteration";
-                const d = {}; this.graph.nodes.forEach(n => { d[n] = Infinity; this.badge(n, '∞'); });
-                d[start] = 0; this.badge(start, '0');
-                this.log("התחלת Bellman-Ford (|V|-1 איטרציות)");
+                const n = this.graph.nodes.length;
+                this.ui.dsTitle.innerText = "איטרציה נוכחית";
+                const d={}; this.graph.nodes.forEach(n=>{d[n]=Infinity; this.badge(n,'∞');});
+                d[start]=0; this.badge(start,'0');
 
-                for (let i = 1; i < this.graph.nodes.length; i++) {
-                    this.log(`--- איטרציה ${i} ---`, 'l-act');
+                this.log(`בלמן-פורד: מבצעים |V|-1 איטרציות (${n-1}). מאפשר משקלים שליליים.`);
+
+                for(let i=1; i<n; i++) {
+                    this.log(`--- איטרציה מספר ${i} ---`, 'type-action');
                     this.updateDS([`i=${i}`]);
                     let changed = false;
-                    for (let e of this.graph.edges) {
+
+                    for(let e of this.graph.edges) {
                         this.hlEdge(e.u, e.v, true);
                         this.hlNode(e.u, 'active');
-                        if (d[e.u] !== Infinity && d[e.u] + e.w < d[e.v]) {
+                        
+                        // Explanation
+                        const distU = d[e.u] === Infinity ? '∞' : d[e.u];
+                        const distV = d[e.v] === Infinity ? '∞' : d[e.v];
+                        
+                        if(d[e.u] !== Infinity && d[e.u] + e.w < d[e.v]) {
                             d[e.v] = d[e.u] + e.w;
                             this.badge(e.v, `d:${d[e.v]}`);
-                            this.log(`שיפור קשת (${e.u},${e.v}) -> ${d[e.v]}`, 'l-success');
+                            this.log(`שיפור בקשת (${e.u},${e.v}): <span class="math">${distU} + (${e.w}) = ${d[e.v]}</span> (היה ${distV}).`, 'type-success');
                             changed = true;
                         }
                         yield;
                         this.hlEdge(e.u, e.v, false);
                         this.hlNode(e.u, '');
                     }
-                    if (!changed) { this.log("אין שינויים, עצירה מוקדמת.", 'l-info'); break; }
+                    if(!changed) {
+                        this.log("לא בוצעו שינויים באיטרציה זו. ניתן לעצור מוקדם.", 'type-info');
+                        break;
+                    }
                 }
-                // Check Cycle
-                for (let e of this.graph.edges) {
-                    if (d[e.u] !== Infinity && d[e.u] + e.w < d[e.v]) {
-                        this.log("⚠️ זוהה מעגל שלילי!", 'l-err');
+                
+                this.log("בדיקת מעגלים שליליים...", 'type-calc');
+                for(let e of this.graph.edges) {
+                    if(d[e.u] !== Infinity && d[e.u] + e.w < d[e.v]) {
+                        this.log("שגיאה: נמצא מעגל שלילי בגרף!", 'type-error');
                         return;
                     }
                 }
-                this.log("סיום תקין.", 'l-success');
+                this.log("האלגוריתם הסתיים בהצלחה.", 'type-success');
+            }
+
+            *runDAG() {
+                const start = this.graph.nodes[0];
+                this.ui.dsTitle.innerText = "מיון טופולוגי";
+                this.log("שלב 1: חישוב סדר טופולוגי (Topological Sort).<br>זה מבטיח שנעבד הורים לפני ילדים.");
+                
+                const inDegree={}; this.graph.nodes.forEach(n=>inDegree[n]=0);
+                this.graph.edges.forEach(e=>inDegree[e.v]++);
+                const q = this.graph.nodes.filter(n=>inDegree[n]===0);
+                const topo = [];
+
+                while(q.length) {
+                    const u = q.shift();
+                    topo.push(u);
+                    this.updateDS(topo);
+                    this.hlNode(u, 'finished');
+                    yield;
+                    this.graph.edges.filter(e=>e.u===u).forEach(e=>{
+                        inDegree[e.v]--;
+                        if(inDegree[e.v]===0) q.push(e.v);
+                    });
+                }
+
+                this.log(`סדר טופולוגי נקבע: [${topo.join(', ')}]. כעת נחשב מרחקים.`, 'type-action');
+                this.graph.nodes.forEach(n=>this.hlNode(n, ''));
+                
+                const d={}; this.graph.nodes.forEach(n=>d[n]=Infinity); d[start]=0;
+                this.badge(start, '0');
+
+                for(let u of topo) {
+                    if(d[u]===Infinity) continue;
+                    this.hlNode(u, 'active');
+                    this.log(`מעבד את צומת <strong>${u}</strong> לפי הסדר.`, 'type-action');
+                    yield;
+
+                    const neighbors = this.graph.edges.filter(e=>e.u===u);
+                    for(let e of neighbors) {
+                        this.hlEdge(u, e.v, true);
+                        const alt = d[u] + e.w;
+                        const old = d[e.v] === Infinity ? '∞' : d[e.v];
+                        
+                        if(alt < d[e.v]) {
+                            d[e.v] = alt;
+                            this.badge(e.v, `d:${d[e.v]}`);
+                            this.log(`Relax(${u}->${e.v}): <span class="math">${d[u]} + ${e.w} = ${alt}</span> < ${old}.`, 'type-success');
+                        }
+                        yield;
+                        this.hlEdge(u, e.v, false);
+                    }
+                    this.hlNode(u, 'visited');
+                }
+                this.log("סיום. עברנו על כל הצמתים בסדר טופולוגי.", 'type-success');
+            }
+
+            *runSCC() {
+                this.ui.dsTitle.innerText = "מחסנית רקורסיה";
+                let ids={}, low={}, stack=[], onStack={}, id=0, sccCount=0;
+                const visited=new Set();
+                const that = this;
+                this.log("אלגוריתם Tarjan למציאת רכיבים קשירים היטב (SCC).");
+
+                function* dfs(at) {
+                    stack.push(at); onStack[at]=true; visited.add(at);
+                    ids[at]=low[at]=id++;
+                    that.hlNode(at, 'active');
+                    that.badge(at, `L:${low[at]}`);
+                    that.updateDS(stack);
+                    that.log(`ביקור בצומת <strong>${at}</strong>.<br>מספר סידורי (id): ${ids[at]}, Low Link: ${low[at]}.`);
+                    yield;
+
+                    const neighbors = that.graph.edges.filter(e=>e.u===at);
+                    for(let e of neighbors) {
+                        if(!visited.has(e.v)) {
+                            that.hlEdge(at,e.v,true);
+                            yield* dfs(e.v);
+                            low[at] = Math.min(low[at], low[e.v]);
+                            that.badge(at, `L:${low[at]}`);
+                            that.log(`חזרה ל-${at}. עדכון Low לפי הבן ${e.v} -> <span class="math">${low[at]}</span>.`, 'type-calc');
+                            that.hlNode(at, 'active');
+                            yield;
+                            that.hlEdge(at,e.v,false);
+                        } else if(onStack[e.v]) {
+                            low[at] = Math.min(low[at], ids[e.v]);
+                            that.badge(at, `L:${low[at]}`);
+                            that.log(`${e.v} נמצא במחסנית (קשת אחורית). עדכון Low ל-<span class="math">${low[at]}</span>.`, 'type-calc');
+                            yield;
+                        }
+                    }
+
+                    if(ids[at] === low[at]) {
+                        that.log(`<strong>${at}</strong> הוא שורש של SCC! (כי id == low). מרוקן מחסנית...`, 'type-success');
+                        while(stack.length) {
+                            const node = stack.pop();
+                            onStack[node] = false;
+                            document.getElementById(`n-${node}`).setAttribute('data-scc', sccCount%3);
+                            that.updateDS(stack);
+                            if(node === at) break;
+                            yield;
+                        }
+                        sccCount++;
+                    }
+                }
+
+                for(let n of this.graph.nodes) {
+                    if(!visited.has(n)) yield* dfs(n);
+                }
+                this.log(`סיום. נמצאו ${sccCount} רכיבים קשירים.`, 'type-success');
             }
         }
 
