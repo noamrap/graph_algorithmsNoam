@@ -2,1009 +2,1083 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ממלכת האלגוריתמים - נועם רפופורט</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI TradeCommand - Deep Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;500;700&family=Share+Tech+Mono&family=Assistant:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* --- משתנים ועיצוב בסיסי (High Tech / Royal) --- */
         :root {
-            --bg-core: #050b14;
-            --bg-panel: #0f172a;
-            --border: #1e293b;
-            --primary: #00f3ff; /* Cyan Neon */
-            --gold: #ffd700; /* Gold */
-            --accent: #ff0055; /* Neon Red */
-            --success: #00ff9d; /* Matrix Green */
+            --bg-dark: #040712;
+            --bg-gradient: radial-gradient(circle at 10% 0%, #1a345a 0, transparent 55%),
+                           radial-gradient(circle at 90% 100%, #4a1638 0, transparent 55%),
+                           linear-gradient(135deg, #020308 0, #050816 60%, #020308 100%);
+            --panel-bg: rgba(13, 19, 34, 0.82);
+            --panel-bg-strong: rgba(8, 12, 24, 0.95);
+            --border-color: rgba(0, 242, 255, 0.18);
+            --neon-green: #00ff9d;
+            --neon-blue: #00f2ff;
+            --neon-red: #ff2a6d;
+            --neon-yellow: #fcee0a;
+            --accent-soft: #7dd3fc;
             --text-main: #e2e8f0;
-            --text-dim: #94a3b8;
-            --font-ui: 'Segoe UI', system-ui, sans-serif;
-            --font-mono: 'Consolas', 'Monaco', monospace;
+            --text-muted: #94a3b8;
+            --shadow-strong: 0 18px 45px rgba(0,0,0,0.8);
+            --radius-lg: 18px;
         }
 
         * {
             box-sizing: border-box;
-            outline: none;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             margin: 0;
-            padding: 0;
-            background-color: var(--bg-core);
+            background: var(--bg-gradient);
             color: var(--text-main);
-            font-family: var(--font-ui);
-            height: 100vh;
-            overflow: hidden;
+            font-family: 'Exo 2', sans-serif;
+            min-height: 100vh;
+            display: flex;
         }
 
-        /* --- מסך פתיחה (SPLASH SCREEN) --- */
-        #splash-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, #1e293b 0%, #020617 100%);
-            z-index: 10000;
+        /* --- Sidebar --- */
+        .sidebar {
+            width: 76px;
+            background: linear-gradient(to bottom, rgba(10, 20, 40, 0.9), rgba(5, 10, 20, 0.95));
+            border-inline-start: 1px solid rgba(148, 163, 184, 0.18);
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            transition: opacity 0.8s ease-in-out;
+            padding: 16px 10px;
+            gap: 12px;
+            backdrop-filter: blur(16px);
+            box-shadow: 8px 0 30px rgba(0,0,0,0.8);
+            z-index: 20;
         }
 
-        .fade-out {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .royal-card {
-            background: rgba(0, 0, 0, 0.7);
-            border: 3px solid var(--gold);
-            padding: 40px 60px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 0 60px rgba(255, 215, 0, 0.25);
-            backdrop-filter: blur(10px);
-            animation: float 4s ease-in-out infinite;
-            max-width: 90%;
-        }
-
-        .crown {
-            font-size: 4rem;
-            display: block;
-            margin-bottom: 15px;
-            filter: drop-shadow(0 0 10px var(--gold));
-            animation: spin 8s infinite linear;
-        }
-
-        .royal-title {
-            color: var(--gold);
-            font-size: 1.2rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            font-weight: 800;
-            margin-bottom: 10px;
-        }
-
-        .royal-name {
-            font-size: 3rem;
-            font-weight: 900;
-            margin: 0;
-            background: linear-gradient(to right, #00f3ff, #fff, var(--gold));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(0, 243, 255, 0.4);
-        }
-
-        .funny-subtitle {
-            color: #bbb;
-            font-style: italic;
-            margin-top: 15px;
-            font-size: 1.1rem;
-            min-height: 1.5em;
-            font-family: var(--font-mono);
-        }
-
-        .start-btn-large {
-            margin-top: 40px;
-            padding: 15px 50px;
-            font-size: 1.4rem;
-            background: var(--primary);
-            color: #000;
-            border: none;
-            border-radius: 50px;
-            font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 0 25px var(--primary);
-            transition: all 0.3s;
-        }
-
-        .start-btn-large:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 50px var(--primary);
-            background: #fff;
-        }
-
-        /* --- ממשק ראשי --- */
-        #app-interface {
-            display: none;
-            height: 100vh;
-            grid-template-rows: auto 1fr; /* Header takes auto height */
-            opacity: 0;
-            transition: opacity 1s ease-in;
-        }
-
-        header {
-            background: rgba(15, 23, 42, 0.98);
-            border-bottom: 1px solid var(--primary);
+        .logo-mark {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            border: 1px solid rgba(148,163,184,0.4);
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 10px 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-            z-index: 100;
-            flex-wrap: wrap;
-            gap: 10px;
+            justify-content: center;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--neon-blue);
+            box-shadow: 0 0 16px rgba(0,242,255,0.35);
+            background: radial-gradient(circle at 20% 0, rgba(0,242,255,0.25) 0, transparent 60%),
+                        rgba(15,23,42,0.9);
         }
 
-        .app-logo {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: #fff;
-            letter-spacing: 1px;
-            white-space: nowrap;
+        .sidebar-label {
+            margin-top: 6px;
+            font-size: 0.65rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
         }
 
-        .nav-pills {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding-bottom: 2px;
-            scrollbar-width: none; /* Hide scrollbar Firefox */
+        .nav-section-title {
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-top: 22px;
+            margin-bottom: 4px;
         }
-        .nav-pills::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome */
 
         .nav-btn {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-dim);
-            padding: 6px 12px;
-            border-radius: 6px;
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            border: 1px solid rgba(148,163,184,0.25);
+            background: radial-gradient(circle at 20% 0, rgba(148,163,184,0.2) 0, transparent 60%),
+                        rgba(15,23,42, 0.9);
+            color: #94a3b8;
+            font-size: 1.1rem;
             cursor: pointer;
-            font-weight: 600;
             transition: 0.2s;
-            font-size: 0.85rem;
-            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-btn:hover {
+            color: var(--neon-blue);
+            border-color: rgba(56,189,248,0.8);
+            box-shadow: 0 0 16px rgba(56,189,248,0.4);
+            transform: translateY(-1px);
         }
 
         .nav-btn.active {
-            background: rgba(0, 243, 255, 0.15);
-            color: var(--primary);
-            border-color: var(--primary);
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+            color: var(--neon-green);
+            border-color: rgba(34,197,94,0.9);
+            box-shadow: 0 0 18px rgba(34,197,94,0.45);
         }
 
-        /* --- Main Grid Layout & Responsiveness --- */
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 400px;
-            height: 100%; /* Fill remaining height */
-            overflow: hidden;
+        .sidebar-spacer {
+            flex: 1;
         }
 
-        /* Responsive Breakpoint */
-        @media (max-width: 900px) {
-            .main-grid {
-                grid-template-columns: 1fr; /* Stack vertically */
-                grid-template-rows: 1fr 1fr; /* 50% Graph, 50% Panel */
-            }
-            
-            .royal-name { font-size: 2rem; }
-            .crown { font-size: 3rem; }
-            .sidebar { border-right: none; border-top: 2px solid var(--primary); }
-            
-            /* Make panel slightly smaller on mobile to allow graph visibility */
-            .main-grid { grid-template-rows: 45% 55%; }
+        .side-indicator {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            writing-mode: vertical-rl;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            opacity: 0.65;
         }
 
-        /* STAGE (Graph Area) */
-        .stage {
-            background-image: radial-gradient(#1e293b 1px, transparent 1px);
-            background-size: 30px 30px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: inset -10px 0 20px rgba(0,0,0,0.5);
-            /* Touch handling */
-            touch-action: none;
-        }
-
-        svg { width: 100%; height: 100%; cursor: grab; }
-        svg:active { cursor: grabbing; }
-
-        /* Graph Elements */
-        .edge { stroke: #334155; stroke-width: 2; transition: 0.4s; }
-        .edge.active { stroke: var(--gold); stroke-width: 5; filter: drop-shadow(0 0 5px var(--gold)); }
-        .edge.visited { stroke: var(--primary); opacity: 0.4; stroke-width: 3; }
-
-        .label-bg { fill: var(--bg-core); stroke: var(--border); rx: 4; }
-        .label-text { fill: var(--text-main); font-size: 13px; font-family: var(--font-mono); font-weight: bold; text-anchor: middle; dominant-baseline: central; }
-
-        .node-circle { fill: var(--bg-panel); stroke: var(--text-dim); stroke-width: 3px; r: 32; transition: 0.3s; }
-        .node-text { fill: white; font-size: 18px; font-weight: bold; font-family: var(--font-mono); text-anchor: middle; dominant-baseline: central; }
-        .node-badge { font-size: 12px; fill: var(--gold); font-weight: bold; text-anchor: middle; opacity: 0; transition: 0.3s; font-family: var(--font-mono); }
-
-        .group.active .node-circle { stroke: var(--gold); fill: #3f2e04; transform: scale(1.15); box-shadow: 0 0 20px var(--gold); }
-        .group.visited .node-circle { stroke: var(--primary); fill: rgba(0, 243, 255, 0.15); }
-        .group.finished .node-circle { stroke: var(--success); fill: rgba(0, 255, 157, 0.15); }
-
-        /* SIDEBAR - Flexbox based layout for better log space */
-        .sidebar {
-            background: var(--bg-panel);
-            border-right: 1px solid var(--border);
+        /* --- Main Layout --- */
+        .main-content {
+            flex: 1;
+            padding: 16px 18px;
             display: flex;
             flex-direction: column;
-            z-index: 10;
-            box-shadow: -5px 0 30px rgba(0,0,0,0.5);
-            height: 100%;
+            gap: 12px;
+            position: relative;
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .top-title-block {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .app-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .app-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .ai-status-chip {
+            padding: 6px 10px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid rgba(34,197,94,0.8);
+            background: radial-gradient(circle at 0 0, rgba(34,197,94,0.25) 0, transparent 55%),
+                        rgba(15,23,42,0.95);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        .ai-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--neon-green);
+            box-shadow: 0 0 12px rgba(34,197,94,0.9);
+        }
+
+        .top-right-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pill-btn {
+            border-radius: 999px;
+            padding: 7px 14px;
+            border: 1px solid rgba(148,163,184,0.6);
+            background: rgba(15,23,42, 0.8);
+            color: var(--text-main);
+            font-size: 0.78rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .pill-btn:hover {
+            border-color: rgba(56,189,248,0.9);
+            color: var(--accent-soft);
+        }
+
+        /* --- Ticker --- */
+        .ticker-wrap {
+            height: 38px;
+            background: linear-gradient(90deg, rgba(15,23,42,0.95), rgba(15,23,42,0.8));
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
             overflow: hidden;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            box-shadow: 0 12px 35px rgba(15,23,42, 0.8);
+            padding-inline: 10px;
+        }
+
+        .ticker-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: var(--text-muted);
+            margin-inline-end: 12px;
+            white-space: nowrap;
+        }
+
+        #ticker {
+            animation: scroll 25s linear infinite;
+            white-space: nowrap;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        .ticker-item {
+            padding-inline: 1.4rem;
+        }
+
+        .val-up { color: var(--neon-green); }
+        .val-down { color: var(--neon-red); }
+
+        /* --- Dashboard Grid --- */
+        .dashboard-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1.4fr 1.1fr 1.2fr;
+            grid-template-rows: 1.8fr 1fr;
+            gap: 14px;
+            margin-top: 6px;
+            min-height: 0;
         }
 
         .panel {
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--border);
-            background: rgba(0,0,0,0.2);
-            flex-shrink: 0; /* Prevent shrinking */
-        }
-
-        .panel-title {
-            margin: 0 0 5px 0;
-            color: var(--primary);
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .explanation-box {
-            background: rgba(255, 255, 255, 0.05);
-            border-right: 3px solid var(--gold);
-            padding: 8px;
-            font-size: 0.85rem;
-            line-height: 1.35;
-            color: #d1d5db;
-            max-height: 70px; /* Reduced height to save space */
-            overflow-y: auto;
-        }
-
-        .ds-items {
-            display: flex;
-            gap: 6px;
-            overflow-x: auto;
-            height: 45px;
-            align-items: center;
-            padding-bottom: 5px;
-        }
-
-        .ds-item {
-            min-width: 35px; height: 35px;
-            background: var(--bg-core); border: 1px solid var(--border);
-            border-radius: 6px; display: flex; align-items: center; justify-content: center;
-            font-family: var(--font-mono); font-weight: bold; font-size: 0.85rem;
-            color: var(--text-main); transition: 0.3s;
-        }
-        .ds-item.active { border-color: var(--gold); color: var(--gold); transform: translateY(-3px); box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); }
-
-        /* LOGS AREA - IMPROVED */
-        .log-wrapper {
-            flex-grow: 1; /* This makes it take ALL remaining space */
+            background: var(--panel-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: 14px 16px;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Important for inner scroll */
-            background: #080c14;
-            min-height: 0; /* Fix for flexbox scroll bug */
+            box-shadow: var(--shadow-strong);
+            position: relative;
+            overflow: hidden;
         }
 
-        .log-header {
-            padding: 8px 15px;
-            background: rgba(255,255,255,0.02);
-            font-size: 0.75rem;
-            color: var(--text-dim);
-            border-bottom: 1px solid var(--border);
-            flex-shrink: 0;
+        .panel::before {
+            content: "";
+            position: absolute;
+            inset: -20%;
+            background:
+                radial-gradient(circle at 0 0, rgba(59,130,246,0.08) 0, transparent 55%),
+                radial-gradient(circle at 100% 100%, rgba(236,72,153,0.06) 0, transparent 55%);
+            pointer-events: none;
+            opacity: 0.9;
         }
 
-        .log-container {
-            flex-grow: 1;
+        .panel-inner {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .panel-header {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(148,163,184,0.25);
+            padding-bottom: 8px;
+        }
+
+        .panel-header span:first-child {
+            letter-spacing: 0.16em;
+        }
+
+        .panel-tag {
+            font-size: 0.7rem;
+            padding: 3px 9px;
+            border-radius: 999px;
+            border: 1px solid rgba(148,163,184,0.4);
+            color: var(--accent-soft);
+        }
+
+        /* --- Asset List --- */
+        #assetList {
             overflow-y: auto;
-            padding: 10px;
-            font-family: var(--font-mono);
-            font-size: 0.9rem; /* Increased readable font */
-            line-height: 1.6;
-            scroll-behavior: smooth;
+            padding-right: 2px;
+            margin-top: 4px;
+        }
+
+        .asset-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 9px 4px;
+            border-bottom: 1px solid rgba(148,163,184,0.22);
+            transition: 0.2s;
+        }
+        .asset-item:last-child {
+            border-bottom: none;
+        }
+
+        .asset-item:hover {
+            background: radial-gradient(circle at 0 0, rgba(56,189,248,0.08) 0, transparent 60%);
+            transform: translateY(-1px);
+        }
+
+        .asset-primary {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .asset-secondary {
+            font-size: 0.73rem;
+            color: var(--text-muted);
+        }
+
+        .asset-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .asset-price {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        .btn-analyze-small {
+            background: rgba(15,23,42, 0.9);
+            border: 1px solid rgba(56,189,248,0.8);
+            color: var(--accent-soft);
+            border-radius: 999px;
+            padding: 3px 10px;
+            cursor: pointer;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: 0.18s;
+        }
+        .btn-analyze-small i {
+            font-size: 0.75rem;
+        }
+        .btn-analyze-small:hover {
+            background: var(--neon-blue);
+            color: #020617;
+            box-shadow: 0 0 14px rgba(56,189,248,0.9);
+            transform: translateY(-1px);
+        }
+
+        /* --- Chart --- */
+        .chart-main {
+            grid-column: 1 / 3;
+            grid-row: 1 / 2;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            flex: 1;
+            min-height: 260px;
+            max-height: 100%;
+        }
+
+        #mainChart {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .chart-footer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .chart-footer-row span strong {
+            color: var(--accent-soft);
+        }
+
+        /* --- KPIs --- */
+        .controls-area {
+            grid-column: 1 / 3;
+            grid-row: 2 / 3;
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 14px;
+        }
+
+        .kpi-block {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            text-align: left;
+            gap: 3px;
+        }
+
+        .kpi-label {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .big-stat {
+            font-size: 2.1rem;
+            font-weight: 700;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .big-stat.green { color: var(--neon-green); }
+        .big-stat.white { color: #f9fafb; }
+
+        .kpi-sub {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* --- Logs --- */
+        .log-panel {
+            grid-column: 3 / 4;
+            grid-row: 1 / 3;
+        }
+
+        #logs {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.78rem;
+            color: #9ca3af;
+            overflow-y: auto;
+            margin-top: 6px;
+            padding-right: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            height: 100%;
         }
 
         .log-entry {
-            margin-bottom: 8px;
-            padding: 8px 10px;
-            border-radius: 4px;
-            background: rgba(255,255,255,0.03);
-            border-right: 3px solid transparent;
-            animation: slideIn 0.2s;
+            white-space: nowrap;
         }
 
-        .l-info { border-color: var(--text-dim); color: var(--text-dim); }
-        .l-act { border-color: var(--primary); color: #befafe; background: rgba(0, 243, 255, 0.05); }
-        .l-calc { border-color: var(--gold); color: #fef08a; font-style: italic; }
-        .l-success { border-color: var(--success); color: #bef264; background: rgba(0, 255, 157, 0.05); }
-        .l-err { border-color: var(--accent); color: #fca5a5; }
-
-        /* CONTROLS */
-        .controls {
-            padding: 15px;
-            background: var(--bg-panel);
-            border-top: 1px solid var(--border);
-            flex-shrink: 0;
+        .log-entry span.tag {
+            color: var(--accent-soft);
         }
 
-        .control-group { margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
-        .control-label { font-size: 0.8rem; color: var(--text-dim); }
-
-        select.custom-select {
-            background: var(--bg-core); color: var(--text-main); border: 1px solid var(--border);
-            padding: 4px 8px; border-radius: 4px; font-family: var(--font-mono); cursor: pointer;
+        /* --- MODAL POPUP --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(3,4,11, 0.93);
+            backdrop-filter: blur(14px);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            padding: 14px;
         }
 
-        .btn-row { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
-
-        .c-btn {
-            width: 45px; height: 45px; border-radius: 50%; border: none; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
-            color: #fff; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        .modal-box {
+            background: var(--panel-bg-strong);
+            border: 1px solid rgba(56, 189, 248, 0.7);
+            width: 520px;
+            max-width: 100%;
+            padding: 1px;
+            position: relative;
+            transform: scale(0.85);
+            opacity: 0;
+            transition: all 0.27s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.95);
+            border-radius: 20px;
         }
-        .c-btn:active { transform: scale(0.95); }
-        .btn-play { background: var(--primary); color: #000; width: 55px; height: 55px; font-size: 1.6rem; }
-        .btn-step { background: var(--bg-core); border: 2px solid var(--text-dim); color: var(--text-main); }
-        .btn-reset { width: 35px; height: 35px; background: transparent; border: 1px solid var(--border); color: var(--text-dim); font-size: 0.9rem; }
 
-        input[type=range] { width: 90px; accent-color: var(--primary); height: 4px; }
+        .modal-inner {
+            background:
+                radial-gradient(circle at 0 0, rgba(56,189,248,0.1) 0, transparent 55%),
+                radial-gradient(circle at 100% 0, rgba(251,113,133,0.08) 0, transparent 55%),
+                #020617;
+            padding: 24px 24px 22px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+        }
 
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-        @keyframes spin { 0% { transform: rotateY(0deg); } 100% { transform: rotateY(360deg); } }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+        .modal-scan-line {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(to right, transparent, var(--neon-blue), transparent);
+            opacity: 0.7;
+            box-shadow: 0 0 14px var(--neon-blue);
+            animation: scanDown 2.2s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(148,163,184,0.35);
+            padding-bottom: 12px;
+            margin-bottom: 18px;
+        }
+
+        .modal-header-left small {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+        }
+
+        #modalTitle {
+            margin: 3px 0 0;
+            font-size: 1.9rem;
+            letter-spacing: 0.12em;
+        }
+
+        .prediction-badge {
+            padding: 6px 15px;
+            border-radius: 999px;
+            font-weight: bold;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            border-width: 1px;
+            border-style: solid;
+        }
+        
+        .badge-buy { background: rgba(0, 255, 157, 0.15); color: var(--neon-green); border-color: rgba(0, 255, 157, 0.65); }
+        .badge-sell { background: rgba(255, 42, 109, 0.16); color: var(--neon-red); border-color: rgba(255, 42, 109, 0.7); }
+        .badge-hold { background: rgba(252, 238, 10, 0.18); color: var(--neon-yellow); border-color: rgba(252, 238, 10, 0.8); }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .data-point label {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+        }
+
+        .data-point span {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.05rem;
+        }
+
+        .typing-container {
+            background: rgba(15,23,42,0.9);
+            border: 1px solid rgba(148,163,184,0.5);
+            padding: 12px 11px 11px;
+            font-family: 'Assistant', sans-serif;
+            line-height: 1.6;
+            min-height: 76px;
+            position: relative;
+            border-radius: 14px;
+            font-size: 0.85rem;
+        }
+        
+        .typing-container::before {
+            content: "AI CONCLUSION";
+            position: absolute;
+            top: -9px;
+            right: 14px;
+            background: #020617;
+            padding: 0 6px;
+            font-size: 0.68rem;
+            color: var(--neon-blue);
+            letter-spacing: 0.18em;
+        }
+
+        #typewriterText {
+            white-space: pre-wrap;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #9ca3af;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: 0.15s;
+        }
+        .close-btn:hover {
+            color: #e5e7eb;
+            transform: scale(1.08);
+        }
+
+        .modal-action-btn {
+            width: 100%;
+            padding: 13px 0;
+            margin-top: 18px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-green));
+            border: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: #020617;
+            box-shadow: 0 0 22px rgba(34,197,94,0.6);
+            transition: 0.2s;
+        }
+        .modal-action-btn:hover {
+            filter: brightness(1.06);
+            transform: translateY(-1px);
+        }
+
+        @keyframes scanDown {
+            0% { top: -10%; opacity: 0; }
+            40% { opacity: 0.9; }
+            100% { top: 106%; opacity: 0; }
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 1024px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                flex-direction: row;
+                width: 100%;
+                height: auto;
+                padding: 10px 14px;
+                justify-content: space-between;
+                box-shadow: 0 6px 26px rgba(0,0,0,0.85);
+            }
+
+            .sidebar-spacer,
+            .side-indicator,
+            .sidebar-label,
+            .nav-section-title {
+                display: none;
+            }
+
+            .main-content {
+                padding: 12px 12px 16px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+            }
+
+            .chart-main {
+                grid-column: 1 / 2;
+                grid-row: 1 / 2;
+            }
+            .controls-area {
+                grid-column: 1 / 2;
+                grid-row: 2 / 3;
+                grid-template-columns: 1fr;
+            }
+            .log-panel {
+                grid-column: 1 / 2;
+                grid-row: 3 / 4;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .app-title {
+                font-size: 1rem;
+            }
+            .ticker-label {
+                display: none;
+            }
+            .chart-wrapper {
+                min-height: 220px;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div id="splash-screen">
-        <div class="royal-card" onclick="changeJoke()">
-            <div class="crown">👑</div>
-            <div class="royal-title">השליט הבלתי מעורער</div>
-            <h2 class="royal-name">נועם רפופורט</h2>
-            <div class="funny-subtitle" id="jokeText">ממיין מערכים במבט בלבד...</div>
-            <button id="startTrigger" class="start-btn-large">התחל ללמוד 🚀</button>
+    <div class="sidebar">
+        <div>
+            <div class="logo-mark">AI</div>
+            <div class="sidebar-label">TRADE CMD</div>
         </div>
-        <div style="margin-top:20px; color:#666; font-size:0.8rem">לחץ על הכרטיס כדי להחליף עובדה</div>
+
+        <div class="nav-section-title">MODES</div>
+        <button class="nav-btn active"><i class="fas fa-satellite-dish"></i></button>
+        <button class="nav-btn"><i class="fas fa-chart-area"></i></button>
+
+        <div class="sidebar-spacer"></div>
+
+        <div class="side-indicator">DEEP ANALYSIS</div>
     </div>
 
-    <div id="app-interface">
-        <header>
-            <div class="app-logo">Algo<span style="color:var(--primary)">Lab</span> Pro</div>
-            <div class="nav-pills">
-                <button class="nav-btn active" onclick="app.load('Dijkstra')">Dijkstra</button>
-                <button class="nav-btn" onclick="app.load('BFS')">BFS</button>
-                <button class="nav-btn" onclick="app.load('DFS')">DFS</button>
-                <button class="nav-btn" onclick="app.load('SCC')">SCC</button>
-                <button class="nav-btn" onclick="app.load('DAG')">DAG</button>
-                <button class="nav-btn" onclick="app.load('Bellman')">Bellman</button>
+    <div class="main-content">
+        <div class="top-bar">
+            <div class="top-title-block">
+                <div class="app-title">AI TRADECOMMAND</div>
+                <div class="app-subtitle">ניתוח עומק חצי-אוטומטי של מניות, קריפטו ואינדקסים</div>
             </div>
-        </header>
+            <div class="top-right-actions">
+                <div class="ai-status-chip">
+                    <span class="ai-dot"></span>
+                    <span>AI MODE: ACTIVE</span>
+                </div>
+                <button class="pill-btn">
+                    <i class="fas fa-robot"></i>
+                    מצב אוטומציה
+                </button>
+            </div>
+        </div>
+        
+        <div class="ticker-wrap">
+            <div class="ticker-label">LIVE TICKER</div>
+            <div id="ticker"></div>
+        </div>
 
-        <div class="main-grid">
-            <div class="stage">
-                <svg id="svgLayer">
-                    <defs>
-                        <marker id="arrow" markerWidth="10" markerHeight="7" refX="34" refY="3.5" orient="auto">
-                            <polygon points="0 0, 10 3.5, 0 7" fill="#334155" />
-                        </marker>
-                        <marker id="arrow-active" markerWidth="10" markerHeight="7" refX="34" refY="3.5" orient="auto">
-                            <polygon points="0 0, 10 3.5, 0 7" fill="#ffd700" />
-                        </marker>
-                    </defs>
-                    <g id="g-edges"></g>
-                    <g id="g-nodes"></g>
-                </svg>
+        <div class="dashboard-grid">
+            
+            <!-- Assets -->
+            <div class="panel">
+                <div class="panel-inner">
+                    <div class="panel-header">
+                        <span>נכסים זמינים לניתוח</span>
+                        <span class="panel-tag"><i class="fas fa-search"></i> AI WATCHLIST</span>
+                    </div>
+                    <div id="assetList"></div>
+                </div>
             </div>
 
-            <div class="sidebar">
-
-                <div class="panel">
-                    <div class="panel-title">
-                        <span id="algoNameDisplay">Dijkstra</span>
+            <!-- Main Chart -->
+            <div class="panel chart-main">
+                <div class="panel-inner">
+                    <div class="panel-header">
+                        <span>ניתוח טכני ראשי</span>
+                        <span class="panel-tag"><i class="fas fa-wave-square"></i> REAL-TIME FEED</span>
                     </div>
-                    <div class="explanation-box" id="algoExplanation">
-                        טוען הסבר...
+                    <div class="chart-wrapper">
+                        <canvas id="mainChart"></canvas>
+                    </div>
+                    <div class="chart-footer-row">
+                        <span>מצב תצוגה: <strong>VOL / PRICE ACTION (LIVE)</strong></span>
+                        <span>רענון כל 0.5 שניות · נתונים מדומים לצורך הדגמה</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPIs -->
+            <div class="panel controls-area">
+                <div class="panel-inner">
+                    <div class="kpi-block">
+                        <div class="kpi-label">רווח יומי משוער</div>
+                        <div class="big-stat green">+$1,240.50</div>
+                        <div class="kpi-sub">מבוסס על אסטרטגיית AI Momentum · תיק מדומה</div>
+                    </div>
+                </div>
+                <div class="panel-inner">
+                    <div class="kpi-block">
+                        <div class="kpi-label">עסקאות פתוחות</div>
+                        <div class="big-stat white">3</div>
+                        <div class="kpi-sub">חשיפה ממוצעת לנכס: 18.4% · רמת מינוף: x3.2</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logs -->
+            <div class="panel log-panel">
+                <div class="panel-inner">
+                    <div class="panel-header">
+                        <span>LIVE FEED</span>
+                        <span class="panel-tag"><i class="fas fa-terminal"></i> SYSTEM LOG</span>
+                    </div>
+                    <div id="logs"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="predictionModal">
+        <div class="modal-box">
+            <div class="modal-inner">
+                <div class="modal-scan-line"></div>
+                <button class="close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
+                
+                <div class="modal-header">
+                    <div class="modal-header-left">
+                        <small>AI PREDICTION · NEXT 24H</small>
+                        <h1 id="modalTitle">NVDA</h1>
+                    </div>
+                    <div id="modalBadge" class="prediction-badge badge-buy">STRONG BUY</div>
+                </div>
+
+                <div class="analysis-grid">
+                    <div class="data-point">
+                        <label>מחיר יעד (24h)</label>
+                        <span id="modalTarget" style="color: var(--neon-green)">$148.20</span>
+                    </div>
+                    <div class="data-point">
+                        <label>רמת סיכון</label>
+                        <span id="modalRisk" style="color: orange">MEDIUM</span>
+                    </div>
+                    <div class="data-point">
+                        <label>וודאות אלגוריתם</label>
+                        <span id="modalConfidence">94.2%</span>
+                    </div>
+                    <div class="data-point">
+                        <label>נפח מסחר</label>
+                        <span>High Volatility</span>
                     </div>
                 </div>
 
-                <div class="panel">
-                    <div class="panel-title">
-                        <span id="dsTitle">מבנה נתונים</span>
-                        <span style="font-size:0.7rem; opacity:0.7; color:var(--success)">LIVE</span>
-                    </div>
-                    <div class="ds-items" id="dsContainer"></div>
+                <div class="typing-container">
+                    <span id="typewriterText"></span><span style="animation: blink 1s infinite">|</span>
                 </div>
 
-                <div class="log-wrapper">
-                    <div class="log-header">יומן ריצה והסברים (Logs)</div>
-                    <div class="log-container" id="logBox">
-                        <div class="log-entry l-info">המערכת מוכנה. בחר אלגוריתם והתחל לרוץ.</div>
-                    </div>
-                </div>
-
-                <div class="controls">
-                    <div class="control-group">
-                        <span class="control-label">קודקוד התחלה:</span>
-                        <select id="startNodeSelect" class="custom-select" onchange="app.changeStartNode()"></select>
-                    </div>
-
-                    <div class="control-group">
-                        <span class="control-label">מהירות:</span>
-                        <input type="range" id="speedRange" min="100" max="2500" value="1200" step="100" dir="ltr">
-                    </div>
-
-                    <div class="btn-row">
-                        <button class="c-btn btn-reset" onclick="app.reset()" title="אתחול מחדש">↺</button>
-                        <button class="c-btn btn-play" id="playBtn" onclick="app.toggleAuto()" title="נגן / השהה">▶</button>
-                        <button class="c-btn btn-step" onclick="app.manualStep()" title="צעד ידני">➜</button>
-                    </div>
-                </div>
+                <button class="modal-action-btn" onclick="closeModal()">
+                    ביצוע פעולה בתיק השקעות
+                </button>
             </div>
         </div>
     </div>
 
     <script>
-        /* --- לוגיקת פתיח --- */
-        const jokes = [
-            "מחשב מסלול קצר למקרר...",
-            "פתר את P=NP בהפסקת קפה",
-            "Dijkstra מעתיק ממנו במבחנים",
-            "רץ בסיבוכיות O(1)",
-            "האיש, האגדה, והקודקוד",
-            "לא צריך GPS, יש לו BFS",
-            "מכיר את כל המעגלים השליליים בשכונה",
-            "בנה את האינטרנט מגרף מכוון"
+        // --- DATA & CONFIG ---
+        const stocks = [
+            { symbol: 'BTC', price: 94320, change: '+2.1%', name: 'Bitcoin Core' },
+            { symbol: 'ETH', price: 3450, change: '+1.4%', name: 'Ethereum' },
+            { symbol: 'NVDA', price: 142.50, change: '+0.8%', name: 'NVIDIA Corp' },
+            { symbol: 'TSLA', price: 210.20, change: '-3.2%', name: 'Tesla Inc' },
+            { symbol: 'PLTR', price: 62.40, change: '+5.5%', name: 'Palantir Tech' },
+            { symbol: 'AAPL', price: 225.00, change: '-0.2%', name: 'Apple Inc' },
         ];
 
-        function changeJoke() {
-            const el = document.getElementById('jokeText');
-            el.style.opacity = 0;
-            setTimeout(() => {
-                el.innerText = jokes[Math.floor(Math.random() * jokes.length)];
-                el.style.opacity = 1;
-            }, 200);
-        }
-        setInterval(changeJoke, 3500);
+        const predictions = {
+            'BTC': {
+                action: 'HOLD',
+                badgeClass: 'badge-hold',
+                target: '$95,100',
+                risk: 'High',
+                confidence: '78%',
+                text: 'זוהתה התנגדות סביב $94,500 עם תנודתיות מוגברת. נפח המסחר נשאר גבוה לצד פעילות לוויתנים משמעותית בבורסת Binance. ההמלצה: להמתין לפריצת התנגדות ברורה לפני כניסה אגרסיבית לפוזיציה חדשה.'
+            },
+            'NVDA': {
+                action: 'STRONG BUY',
+                badgeClass: 'badge-buy',
+                target: '$155.00',
+                risk: 'Low',
+                confidence: '96%',
+                text: 'ביקוש חזק לשבבי H100 ומערכת אספקה יציבה משמרים מומנטום חיובי. האלגוריתם מזהה צבירת פוזיציות מוסדיות ופריצת רמת התנגדות טכנית. צפי להמשך עלייה בטווח 24–48 שעות, עם סיכון נמוך יחסית לתנודתיות חריגה.'
+            },
+            'TSLA': {
+                action: 'SELL',
+                badgeClass: 'badge-sell',
+                target: '$198.00',
+                risk: 'Very High',
+                confidence: '82%',
+                text: 'ירידה בסנטימנט החיובי עקב דיווחים על עיכובים בייצור Cybertruck. שילוב של שבירת קו מגמה עולה עם ירידה בנפח מסחר תומך בתרחיש תיקון. ההמלצה: לממש רווחים חלקיים ולהקטין חשיפה עד להתייצבות המחיר.'
+            },
+            'PLTR': {
+                action: 'BUY',
+                badgeClass: 'badge-buy',
+                target: '$68.50',
+                risk: 'Medium',
+                confidence: '89%',
+                text: 'זכייה במכרז ממשלתי משמעותי מגדילה את הוודאות להכנסות עתידיות. נפח המסחר זינק בכ-200% בשעה האחרונה וה-RSI מאותת על כניסת הון מוסדי. מתאים לפתיחת פוזיציית BUY מדורגת עם ניהול סיכונים הדוק.'
+            },
+            'ETH': {
+                action: 'BUY',
+                badgeClass: 'badge-buy',
+                target: '$3,600',
+                risk: 'Medium',
+                confidence: '85%',
+                text: 'שדרוג רשת מתקרב ומעלה את הביקוש לחוזים חכמים. עמלות הגז נמצאות ברמה נוחה, מה שמגדיל שימוש בפלטפורמה. המלצה: כניסה מדורגת עם מעקב צמוד אחרי תגובת השוק לשחרור השדרוג.'
+            },
+            'AAPL': {
+                action: 'HOLD',
+                badgeClass: 'badge-hold',
+                target: '$226.00',
+                risk: 'Low',
+                confidence: '60%',
+                text: 'השוק ממתין לאירועי הכרזה נוספים בתחום ה-VR/AR. אין תנועות חריגות במחזורי המסחר או בסטיות התקן. בשלב זה האלגוריתם מציע להמתין מחוץ לשוק עד לאות חזק יותר של כיוון מחיר.'
+            }
+        };
 
-        document.addEventListener("DOMContentLoaded", () => {
-            document.getElementById("startTrigger").addEventListener("click", () => {
-                const splash = document.getElementById('splash-screen');
-                const interface = document.getElementById('app-interface');
-                splash.classList.add('fade-out');
-                setTimeout(() => {
-                    splash.style.display = 'none';
-                    interface.style.display = 'grid';
-                    void interface.offsetWidth;
-                    interface.style.opacity = '1';
-                    app.load('Dijkstra');
-                }, 800);
-            });
+        const assetList = document.getElementById('assetList');
+        const ticker = document.getElementById('ticker');
+
+        // Populate Assets & Ticker
+        stocks.forEach(s => {
+            const div = document.createElement('div');
+            div.className = 'asset-item';
+            div.innerHTML = `
+                <div>
+                    <div class="asset-primary">${s.symbol}</div>
+                    <div class="asset-secondary">${s.name}</div>
+                </div>
+                <div class="asset-actions">
+                    <span class="asset-price">$${s.price}</span>
+                    <button class="btn-analyze-small" onclick="analyzeStock('${s.symbol}')">
+                        <i class="fas fa-crosshairs"></i> חיזוי
+                    </button>
+                </div>
+            `;
+            assetList.appendChild(div);
+
+            const color = s.change.includes('+') ? 'val-up' : 'val-down';
+            ticker.innerHTML += `<span class="ticker-item">${s.symbol} <span class="${color}">${s.change}</span></span>`;
+        });
+        ticker.innerHTML += ticker.innerHTML; // duplicate for continuous scroll
+
+        // --- CHART SETUP ---
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        const grad = ctx.createLinearGradient(0,0,0,300);
+        grad.addColorStop(0, 'rgba(0, 242, 255, 0.35)');
+        grad.addColorStop(1, 'rgba(0, 242, 255, 0)');
+
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array(40).fill(''),
+                datasets: [{
+                    data: Array(40).fill(100).map(() => 100 + Math.random()*20),
+                    borderColor: '#38bdf8',
+                    backgroundColor: grad,
+                    fill: true,
+                    tension: 0.45,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: {
+                        display: false
+                    },
+                    y: {
+                        grid: { color: 'rgba(148,163,184,0.25)' },
+                        ticks: {
+                            color: '#94a3b8',
+                            font: { size: 10 }
+                        }
+                    }
+                },
+                animation: false
+            }
         });
 
-        /* --- תיאוריה והסברים --- */
-        const EXPLANATIONS = {
-            'Dijkstra': "אלגוריתם חמדן (Greedy). בכל שלב אנו בוחרים את הקודקוד שהמרחק אליו הוא הקצר ביותר כרגע. לאחר הבחירה, אנו בודקים את השכנים שלו ומנסים לשפר (Relax) את המרחק אליהם.",
-            'BFS': "סריקה לרוחב. דמיינו אבן שנזרקת למים ויוצרת גלים. הגל הראשון מכסה את השכנים המיידיים, הגל השני את השכנים שלהם וכן הלאה. משתמש בתור (Queue) כדי לנהל את הסדר.",
-            'DFS': "סריקה לעומק. כמו במבוך: אנחנו הולכים בשביל אחד עד הסוף (עד שנתקעים), ורק אז חוזרים צעד אחורה (Backtrack) ומנסים שביל אחר. משתמש במחסנית (Stack).",
-            'SCC': "רכיבים קשירים היטב (Tarjan). האלגוריתם מחפש קבוצות 'סגורות' שבהן אפשר להגיע מכל נקודה לכל נקודה אחרת. הוא עושה זאת ע\"י זיהוי מעגלים באמצעות מספרי Low-Link.",
-            'DAG': "בגרף מכוון ללא מעגלים, אנחנו קודם מסדרים את המשימות בסדר הגיוני (מיון טופולוגי - תלויות קודמות קודם). לאחר המיון, מציאת המסלול הקצר היא קלה ומהירה מאוד (ליניארית).",
-            'Bellman': "האלגוריתם היחיד כאן שיודע להתמודד עם משקלים שליליים. הוא עובר על *כל* הקשתות בגרף שוב ושוב (|V|-1 פעמים) ומנסה לשפר מרחקים. אם בסוף עדיין יש שיפור - יש מעגל שלילי."
-        };
+        setInterval(() => {
+            const data = chart.data.datasets[0].data;
+            data.shift();
+            const last = data[data.length - 1];
+            data.push(last + (Math.random() - 0.5) * 4);
+            chart.update();
+        }, 500);
 
-        /* --- נתוני גרפים --- */
-        const SCENARIOS = {
-            GENERAL: {
-                nodes: [0, 1, 2, 3, 4, 5],
-                edges: [
-                    { u: 0, v: 1, w: 5 }, { u: 0, v: 2, w: 2 }, { u: 1, v: 2, w: 6 }, { u: 1, v: 3, w: 1 }, { u: 1, v: 4, w: 10 },
-                    { u: 2, v: 3, w: 9 }, { u: 2, v: 4, w: 1 }, { u: 3, v: 4, w: 7 }, { u: 3, v: 5, w: 1 }, { u: 4, v: 5, w: 5 }, { u: 5, v: 1, w: 2 }
-                ],
-                pos: { 0: { x: 100, y: 300 }, 1: { x: 300, y: 150 }, 2: { x: 300, y: 450 }, 3: { x: 600, y: 150 }, 4: { x: 600, y: 450 }, 5: { x: 800, y: 300 } }
-            },
-            DAG: {
-                nodes: [0, 1, 2, 3, 4, 5],
-                edges: [
-                    { u: 0, v: 1, w: 2 }, { u: 0, v: 2, w: 6 }, { u: 1, v: 2, w: 7 }, { u: 1, v: 3, w: 4 }, { u: 1, v: 4, w: 2 },
-                    { u: 2, v: 3, w: -1 }, { u: 2, v: 4, w: 1 }, { u: 3, v: 4, w: -2 }, { u: 4, v: 5, w: 2 }
-                ],
-                pos: { 0: { x: 80, y: 300 }, 1: { x: 250, y: 150 }, 2: { x: 250, y: 450 }, 3: { x: 500, y: 150 }, 4: { x: 500, y: 450 }, 5: { x: 700, y: 300 } }
-            },
-            BELLMAN: {
-                nodes: [1, 2, 3, 4],
-                edges: [
-                    { u: 1, v: 2, w: 4 }, { u: 1, v: 3, w: 2 }, { u: 2, v: 3, w: 1 }, { u: 3, v: 2, w: 1 },
-                    { u: 2, v: 4, w: 4 }, { u: 3, v: 4, w: 2 }, { u: 4, v: 2, w: -2 }
-                ],
-                pos: { 1: { x: 150, y: 300 }, 2: { x: 450, y: 150 }, 3: { x: 450, y: 450 }, 4: { x: 750, y: 300 } }
-            }
-        };
+        // --- MODAL LOGIC ---
+        const modal = document.getElementById('predictionModal');
+        const modalBox = document.querySelector('.modal-box');
+        let typeInterval = null;
+        
+        function analyzeStock(symbol) {
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modalBox.style.opacity = '1';
+                modalBox.style.transform = 'scale(1)';
+            }, 10);
 
-        /* --- מנוע האפליקציה --- */
-        class App {
-            constructor() {
-                this.graph = SCENARIOS.GENERAL;
-                this.algo = 'Dijkstra';
-                this.gen = null;
-                this.isPlaying = false;
-                this.timer = null;
-                this.selectedStartNode = null;
+            const data = predictions[symbol] || predictions['NVDA'];
+            document.getElementById('modalTitle').innerText = symbol;
+            
+            const badge = document.getElementById('modalBadge');
+            badge.className = `prediction-badge ${data.badgeClass}`;
+            badge.innerText = data.action;
 
-                this.els = {
-                    edges: document.getElementById('g-edges'),
-                    nodes: document.getElementById('g-nodes'),
-                    log: document.getElementById('logBox'),
-                    ds: document.getElementById('dsContainer'),
-                    dsTitle: document.getElementById('dsTitle'),
-                    playBtn: document.getElementById('playBtn'),
-                    speed: document.getElementById('speedRange'),
-                    startSelect: document.getElementById('startNodeSelect'),
-                    explanation: document.getElementById('algoExplanation'),
-                    algoNameDisplay: document.getElementById('algoNameDisplay')
-                };
-            }
+            document.getElementById('modalTarget').innerText = data.target;
+            document.getElementById('modalRisk').innerText = data.risk;
+            document.getElementById('modalConfidence').innerText = data.confidence;
 
-            load(name) {
-                this.algo = name;
-                this.els.algoNameDisplay.innerText = name;
-                this.els.explanation.innerText = EXPLANATIONS[name] || "הסבר בטעינה...";
-
-                document.querySelectorAll('.nav-btn').forEach(b => {
-                    b.classList.remove('active');
-                    if (b.innerText === name) b.classList.add('active');
-                });
-
-                if (name === 'Bellman') this.graph = SCENARIOS.BELLMAN;
-                else if (name === 'DAG') this.graph = SCENARIOS.DAG;
-                else this.graph = SCENARIOS.GENERAL;
-
-                this.populateStartNodes();
-                this.reset();
-            }
-
-            populateStartNodes() {
-                this.els.startSelect.innerHTML = '';
-                this.graph.nodes.forEach((n) => {
-                    const opt = document.createElement('option');
-                    opt.value = n;
-                    opt.innerText = `קודקוד ${n}`;
-                    this.els.startSelect.appendChild(opt);
-                });
-
-                if (this.selectedStartNode && this.graph.nodes.includes(parseInt(this.selectedStartNode))) {
-                    this.els.startSelect.value = this.selectedStartNode;
+            const typeEl = document.getElementById('typewriterText');
+            typeEl.innerText = '';
+            let i = 0;
+            const text = data.text;
+            
+            if (typeInterval) clearInterval(typeInterval);
+            typeInterval = setInterval(() => {
+                if (i < text.length) {
+                    typeEl.innerHTML += text.charAt(i);
+                    i++;
                 } else {
-                    this.els.startSelect.value = this.graph.nodes[0];
+                    clearInterval(typeInterval);
                 }
-            }
-
-            changeStartNode() {
-                this.selectedStartNode = parseInt(this.els.startSelect.value);
-                this.reset();
-            }
-
-            getStartNode() {
-                return parseInt(this.els.startSelect.value);
-            }
-
-            initGraph() {
-                this.els.edges.innerHTML = '';
-                this.els.nodes.innerHTML = '';
-
-                this.graph.edges.forEach(e => {
-                    const u = this.graph.pos[e.u], v = this.graph.pos[e.v];
-                    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-                    g.innerHTML = `
-                                <line x1="${u.x}" y1="${u.y}" x2="${v.x}" y2="${v.y}" class="edge" id="e-${e.u}-${e.v}" marker-end="url(#arrow)"></line>
-                                <rect x="${(u.x + v.x) / 2 - 10}" y="${(u.y + v.y) / 2 - 10}" width="20" height="20" class="label-bg"></rect>
-                                <text x="${(u.x + v.x) / 2}" y="${(u.y + v.y) / 2}" class="label-text">${e.w}</text>
-                            `;
-                    this.els.edges.appendChild(g);
-                });
-
-                this.graph.nodes.forEach(n => {
-                    const p = this.graph.pos[n];
-                    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-                    g.setAttribute("class", "group");
-                    g.setAttribute("id", `n-${n}`);
-                    g.setAttribute("transform", `translate(${p.x},${p.y})`);
-                    g.innerHTML = `
-                                <circle class="node-circle"></circle>
-                                <text class="node-text">${n}</text>
-                                <text class="node-badge" id="b-${n}" y="-42"></text>
-                            `;
-                    this.els.nodes.appendChild(g);
-                });
-            }
-
-            /* --- לוגיקה --- */
-            log(msg, type = 'l-info') {
-                const d = document.createElement('div');
-                d.className = `log-entry ${type}`;
-                d.innerHTML = msg;
-                this.els.log.appendChild(d);
-                // Auto scroll with slight delay to ensure render
-                setTimeout(() => {
-                    this.els.log.scrollTop = this.els.log.scrollHeight;
-                }, 10);
-            }
-
-            updateDS(items, active) {
-                this.els.ds.innerHTML = '';
-                items.forEach(x => {
-                    const el = document.createElement('div');
-                    el.className = `ds-item ${x == active ? 'active' : ''}`;
-                    el.textContent = x;
-                    this.els.ds.appendChild(el);
-                    if (x == active) el.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-                });
-            }
-
-            hlNode(id, cls) {
-                const el = document.getElementById(`n-${id}`);
-                if (!el) return;
-                if (cls === '') el.classList.remove('active', 'visited', 'finished');
-                else {
-                    el.classList.remove('active');
-                    el.classList.add(cls);
-                }
-            }
-
-            hlEdge(u, v, on) {
-                const el = document.getElementById(`e-${u}-${v}`);
-                if (!el) return;
-                if (on) {
-                    el.classList.add('active');
-                    el.setAttribute('marker-end', 'url(#arrow-active)');
-                } else {
-                    el.classList.remove('active');
-                    el.setAttribute('marker-end', 'url(#arrow)');
-                }
-            }
-
-            badge(id, txt) {
-                const el = document.getElementById(`b-${id}`);
-                if (el) {
-                    el.textContent = txt;
-                    el.style.opacity = 1;
-                }
-            }
-
-            reset() {
-                this.stopAuto();
-                this.els.log.innerHTML = '<div class="log-entry l-info">אותחל מחדש. המערכת מחכה לפקודה.</div>';
-                this.initGraph();
-                this.updateDS([]);
-
-                if (this.algo === 'Dijkstra') this.gen = this.runDijkstra();
-                else if (this.algo === 'BFS') this.gen = this.runBFS();
-                else if (this.algo === 'DFS') this.gen = this.runDFS();
-                else if (this.algo === 'SCC') this.gen = this.runSCC();
-                else if (this.algo === 'DAG') this.gen = this.runDAG();
-                else if (this.algo === 'Bellman') this.gen = this.runBellman();
-
-                const startNode = this.getStartNode();
-                if (this.algo !== 'SCC') {
-                    this.log(`אלגוריתם <b>${this.algo}</b> מוכן. נתחיל מקודקוד ${startNode}.`, 'l-info');
-                } else {
-                    this.log(`אלגוריתם <b>SCC</b> מוכן למצוא רכיבים קשירים.`, 'l-info');
-                }
-            }
-
-            toggleAuto() { if (this.isPlaying) this.stopAuto(); else this.startAuto(); }
-
-            startAuto() {
-                if (!this.gen) this.reset();
-                this.isPlaying = true;
-                this.els.playBtn.innerHTML = '⏸';
-                this.loop();
-            }
-
-            stopAuto() {
-                this.isPlaying = false;
-                clearTimeout(this.timer);
-                this.els.playBtn.innerHTML = '▶';
-            }
-
-            manualStep() {
-                if (this.isPlaying) this.stopAuto();
-                this.step();
-            }
-
-            step() {
-                if (!this.gen) return false;
-                const res = this.gen.next();
-                if (res.done) {
-                    this.stopAuto();
-                    return false;
-                }
-                return true;
-            }
-
-            loop() {
-                if (!this.isPlaying) return;
-                if (this.step()) {
-                    const delay = 2600 - this.els.speed.value;
-                    this.timer = setTimeout(() => this.loop(), delay);
-                }
-            }
-
-            /* --- אלגוריתמים עם הסברים משופרים --- */
-
-            *runDijkstra() {
-                const start = this.getStartNode();
-                this.els.dsTitle.innerText = "Priority Queue (Min-Heap)";
-                const d = {}, Q = new Set(this.graph.nodes);
-                this.graph.nodes.forEach(n => { d[n] = Infinity; }); d[start] = 0;
-                this.badge(start, '0');
-
-                this.log("<b>אתחול:</b> המרחק לכל הקודקודים הוא אינסוף (∞), מלבד קודקוד ההתחלה שהוא 0.", 'l-info');
-
-                while (Q.size) {
-                    let u = null, min = Infinity;
-                    Q.forEach(n => { if (d[n] < min) { min = d[n]; u = n; } });
-
-                    if (u === null || min === Infinity) {
-                        this.log("לא נותרו קודקודים נגישים בתור העדיפויות.", 'l-info');
-                        break;
-                    }
-                    Q.delete(u);
-
-                    this.hlNode(u, 'active');
-                    this.updateDS(Array.from(Q), u);
-                    this.log(`<b>שליפה חמדנית:</b> קודקוד <b>${u}</b> הוא כרגע הכי קרוב (מרחק ${min}). נקבע אותו כסופי.`, 'l-act');
-                    yield;
-
-                    const neighbors = this.graph.edges.filter(e => e.u === u);
-                    for (let e of neighbors) {
-                        if (!Q.has(e.v)) continue;
-                        this.hlEdge(u, e.v, true);
-                        const alt = d[u] + e.w;
-                        this.log(`<b>בדיקת שכן ${e.v}:</b> מסלול נוכחי דרך ${u} הוא ${d[u]} + ${e.w} = <b>${alt}</b>.`, 'l-calc');
-                        this.log(`האם ${alt} קצר יותר מהמרחק הידוע (${d[e.v]})?`, 'l-calc');
-                        yield;
-                        if (alt < d[e.v]) {
-                            d[e.v] = alt;
-                            this.badge(e.v, `d:${alt}`);
-                            this.log(`✅ <b>Relaxation מוצלח!</b> נמצא מסלול קצר יותר ל-${e.v}. מעדכן את המרחק.`, 'l-success');
-                        } else {
-                            this.log(`❌ אין שיפור. המסלול הישן עדיף.`, 'l-info');
-                        }
-                        this.hlEdge(u, e.v, false);
-                    }
-                    this.hlNode(u, 'visited');
-                }
-                this.log("🏁 הסתיים! כל המרחקים המינימליים חושבו.", 'l-success');
-            }
-
-            *runBFS() {
-                const start = this.getStartNode();
-                this.els.dsTitle.innerText = "Queue (FIFO)";
-                const Q = [start], visited = new Set([start]);
-
-                this.log(`<b>אתחול:</b> מכניסים את קודקוד ההתחלה ${start} לתור.`, 'l-info');
-
-                while (Q.length) {
-                    this.updateDS([...Q], Q[0]);
-                    const u = Q.shift();
-                    this.hlNode(u, 'active');
-                    this.log(`⏩ <b>שליפה מהתור:</b> מוציאים את ${u} (ראשון נכנס - ראשון יוצא). כעת נסרוק את כל שכניו.`, 'l-act');
-                    yield;
-
-                    const neighbors = this.graph.edges.filter(e => e.u === u).map(e => e.v);
-                    for (let v of neighbors) {
-                        if (!visited.has(v)) {
-                            this.hlEdge(u, v, true);
-                            visited.add(v); Q.push(v);
-                            this.updateDS([...Q], v);
-                            this.log(`🔍 <b>גילוי:</b> שכן ${v} טרם נסרק. מוסיפים אותו לסוף התור (השכבה הבאה).`, 'l-success');
-                            yield;
-                            this.hlEdge(u, v, false);
-                        } else {
-                            this.log(`שכן ${v} כבר מוכר, מדלגים עליו.`, 'l-info');
-                        }
-                    }
-                    this.hlNode(u, 'visited');
-                }
-                this.log("🏁 התור התרוקן. סיימנו את סריקת הרוחב.", 'l-success');
-            }
-
-            *runDFS() {
-                const start = this.getStartNode();
-                this.els.dsTitle.innerText = "Stack (LIFO)";
-                const stack = [start], visited = new Set();
-                
-                this.log(`<b>אתחול:</b> דוחפים את ${start} למחסנית.`, 'l-info');
-
-                while (stack.length) {
-                    const u = stack.pop();
-                    this.updateDS([...stack, u], u);
-
-                    if (!visited.has(u)) {
-                        visited.add(u);
-                        this.hlNode(u, 'active');
-                        this.log(`⏬ <b>צלילה לעומק:</b> נכנסים לקודקוד <b>${u}</b> (האחרון שנכנס למחסנית).`, 'l-act');
-                        yield;
-
-                        const neighbors = this.graph.edges.filter(e => e.u === u).map(e => e.v).reverse();
-                        if (neighbors.length > 0) this.log(`מוסיף את השכנים ${neighbors.join(', ')} למחסנית כדי לבקר בהם בהמשך.`, 'l-calc');
-                        else this.log(`לקודקוד ${u} אין שכנים חדשים או שכולם ביקרו בהם. נאלץ לחזור אחורה (Backtrack).`, 'l-err');
-
-                        for (let v of neighbors) {
-                            if (!visited.has(v)) stack.push(v);
-                        }
-                        this.hlNode(u, 'visited');
-                    } else {
-                        this.log(`קודקוד ${u} כבר נסרק בעבר, מוציאים מהמחסנית.`, 'l-info');
-                    }
-                }
-                this.log("🏁 המחסנית ריקה. סיימנו את סריקת העומק.", 'l-success');
-            }
-
-            *runSCC() {
-                this.els.dsTitle.innerText = "Stack / Low-Link";
-                let ids = {}, low = {}, stack = [], onStack = {}, id = 0, sccCount = 0;
-                const visited = new Set(), that = this;
-
-                this.log("מתחילים חיפוש DFS כדי למצוא רכיבים קשירים. נשתמש בערך <b>Low-Link</b>: הקודקוד הכי 'מוקדם' שניתן להגיע אליו.", 'l-info');
-
-                function* dfs(at) {
-                    stack.push(at); onStack[at] = true; visited.add(at);
-                    ids[at] = low[at] = id++;
-                    that.hlNode(at, 'active'); that.badge(at, `L:${low[at]}`);
-                    that.updateDS(stack, at);
-                    that.log(`<b>ביקור ב-${at}:</b> נותנים לו מזהה ${ids[at]}.`, 'l-act');
-                    yield;
-
-                    const neighbors = that.graph.edges.filter(e => e.u === at);
-                    for (let e of neighbors) {
-                        if (!visited.has(e.v)) {
-                            that.hlEdge(at, e.v, true);
-                            that.log(`צוללים לעומק אל ${e.v}...`, 'l-info');
-                            yield* dfs(e.v);
-                            
-                            // Backtracking logic
-                            const oldLow = low[at];
-                            low[at] = Math.min(low[at], low[e.v]);
-                            if (low[at] < oldLow) that.log(`↩️ חזרה מ-${e.v}: עדכון Low של ${at} ל-${low[at]} (יכול להגיע למעלה בגרף).`, 'l-success');
-                            that.badge(at, `L:${low[at]}`);
-                            that.hlNode(at, 'active'); yield;
-                            that.hlEdge(at, e.v, false);
-                        } else if (onStack[e.v]) {
-                            const oldLow = low[at];
-                            low[at] = Math.min(low[at], ids[e.v]);
-                            if (low[at] < oldLow) that.log(`🔄 <b>קשת אחורית!</b> ${at}->${e.v}. זהו חלק ממעגל. מעדכן Low ל-${low[at]}.`, 'l-calc');
-                            that.badge(at, `L:${low[at]}`);
-                            yield;
-                        }
-                    }
-                    if (ids[at] === low[at]) {
-                        that.log(`🎉 <b>שורש רכיב קשיר:</b> הקודקוד ${at} הוא התחלה של רכיב סגור. מרוקן מחסנית...`, 'l-success');
-                        while (stack.length) {
-                            const node = stack.pop(); onStack[node] = false;
-                            document.getElementById(`n-${node}`).setAttribute('data-scc', sccCount % 3);
-                            that.updateDS(stack);
-                            if (node === at) break; yield;
-                        }
-                        sccCount++;
-                    }
-                }
-                for (let n of this.graph.nodes) if (!visited.has(n)) yield* dfs(n);
-                this.log(`🏁 סיום. נמצאו ${sccCount} רכיבים קשירים בגרף.`, 'l-success');
-            }
-
-            *runDAG() {
-                const start = this.getStartNode();
-                this.els.dsTitle.innerText = "Topo Sort List";
-                const inDegree = {}; this.graph.nodes.forEach(n => inDegree[n] = 0);
-                this.graph.edges.forEach(e => inDegree[e.v]++);
-                const q = this.graph.nodes.filter(n => inDegree[n] === 0);
-                const topo = [];
-
-                this.log("<b>שלב 1: מיון טופולוגי</b>. מחפשים קודקודים שאין להם תלויות (In-Degree = 0).", 'l-info');
-                
-                while (q.length) {
-                    const u = q.shift(); topo.push(u);
-                    this.hlNode(u, 'finished'); this.updateDS(topo, u);
-                    this.log(`מוסיף את ${u} לרשימה הממוינת. מסיר את הקשתות היוצאות ממנו.`, 'l-act');
-                    yield;
-                    this.graph.edges.filter(e => e.u === u).forEach(e => {
-                        inDegree[e.v]--; if (inDegree[e.v] === 0) q.push(e.v);
-                    });
-                }
-
-                this.log("<b>שלב 2:</b> חישוב מרחקים פשוט לפי הסדר שמצאנו.", 'l-info');
-                this.graph.nodes.forEach(n => this.hlNode(n, ''));
-                const d = {}; this.graph.nodes.forEach(n => d[n] = Infinity); d[start] = 0;
-                this.badge(start, '0');
-
-                for (let u of topo) {
-                    if (d[u] === Infinity) {
-                        this.log(`מדלג על ${u} כי אי אפשר להגיע אליו מקודקוד ההתחלה.`, 'l-info');
-                        continue;
-                    }
-                    this.hlNode(u, 'active');
-                    this.log(`מעבד את ${u} (מרחק נוכחי: ${d[u]}).`, 'l-act');
-                    yield;
-
-                    const neighbors = this.graph.edges.filter(e => e.u === u);
-                    for (let e of neighbors) {
-                        this.hlEdge(u, e.v, true);
-                        if (d[u] + e.w < d[e.v]) {
-                            d[e.v] = d[u] + e.w;
-                            this.badge(e.v, `d:${d[e.v]}`);
-                            this.log(`✅ עדכון מרחק ל-${e.v}: ${d[e.v]}`, 'l-success');
-                        }
-                        yield; this.hlEdge(u, e.v, false);
-                    }
-                    this.hlNode(u, 'visited');
-                }
-                this.log("🏁 סיום DAG Shortest Path. הכל חושב במעבר ליניארי אחד.", 'l-success');
-            }
-
-            *runBellman() {
-                const start = this.getStartNode();
-                const d = {}; this.graph.nodes.forEach(n => { d[n] = Infinity; this.badge(n, '∞'); });
-                d[start] = 0; this.badge(start, '0');
-
-                this.log(`<b>עקרון:</b> בגרף עם V קודקודים, המסלול הכי ארוך ללא מעגלים הוא באורך V-1.`, 'l-info');
-                this.log(`לכן, נבצע רלקסציה לכל הקשתות |V|-1 פעמים.`, 'l-info');
-
-                for (let i = 1; i < this.graph.nodes.length; i++) {
-                    this.log(`--- איטרציה ${i} מתוך ${this.graph.nodes.length - 1} ---`, 'l-info');
-                    this.updateDS([`Iter: ${i}`], `Iter: ${i}`);
-                    let changed = false;
-
-                    for (let e of this.graph.edges) {
-                        if (d[e.u] === Infinity) continue;
-
-                        this.hlEdge(e.u, e.v, true); this.hlNode(e.u, 'active');
-                        
-                        const newDist = d[e.u] + e.w;
-                        if (newDist < d[e.v]) {
-                            d[e.v] = newDist;
-                            this.badge(e.v, `d:${d[e.v]}`);
-                            this.log(`✅ שיפור ב-${e.u}->${e.v}: מרחק חדש <b>${d[e.v]}</b>`, 'l-success');
-                            changed = true;
-                        }
-                        yield; this.hlEdge(e.u, e.v, false); this.hlNode(e.u, '');
-                    }
-                    if (!changed) { this.log("✋ לא היו שינויים באיטרציה זו. אפשר לעצור מוקדם.", 'l-success'); break; }
-                }
-
-                // בדיקת מעגל שלילי
-                this.log("בדיקת סופית למעגלים שליליים...", 'l-info');
-                for (let e of this.graph.edges) {
-                    if (d[e.u] !== Infinity && d[e.u] + e.w < d[e.v]) {
-                        this.log("⚠️ <b>זוהה מעגל שלילי!</b> אפשר להקטין את המרחק עד אינסוף.", 'l-err');
-                        return;
-                    }
-                }
-                this.log("🏁 סיום. לא נמצאו מעגלים שליליים.", 'l-success');
-            }
+            }, 28);
         }
 
-        const app = new App();
+        function closeModal() {
+            modalBox.style.opacity = '0';
+            modalBox.style.transform = 'scale(0.85)';
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 260);
+        }
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        // --- BACKGROUND LOGS ---
+        const logContainer = document.getElementById('logs');
+        const msgs = [
+            "Scanning blockchain transaction graph...",
+            "Analysing sentiment across Twitter & Reddit...",
+            "Updating volatility and risk matrices...",
+            "Pulling order book depth from exchanges...",
+            "Evaluating AI momentum indicators...",
+            "Recalculating Sharpe ratio and VAR..."
+        ];
+
+        setInterval(() => {
+            const div = document.createElement('div');
+            div.className = 'log-entry';
+            const msg = msgs[Math.floor(Math.random()*msgs.length)];
+            const latency = (20 + Math.random()*120).toFixed(1);
+            div.innerHTML = `<span class="tag">&gt;</span> ${msg} <span class="tag">[${latency}ms]</span>`;
+            logContainer.appendChild(div);
+            if(logContainer.children.length > 30) logContainer.removeChild(logContainer.firstChild);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }, 2200);
     </script>
 </body>
 </html>
