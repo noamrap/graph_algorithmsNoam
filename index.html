@@ -3,1084 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber Dual-System Portal</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;500;700&family=Share+Tech+Mono&family=Rubik:wght@400;700&family=Assistant:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    <title>לנוני שלי ❤️</title>
     <style>
-        /* --- GLOBAL RESET --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            background: #000;
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            color: white;
-            overflow-x: hidden;
-            display: block;
-        }
-
-        /* --- SCREEN MANAGEMENT --- */
-        .screen {
-            display: none;
-            width: 100vw;
-            min-height: 100vh;
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            transition: opacity 0.6s ease;
-            z-index: 1;
-            background: #000;
-        }
-
-        #home {
+            background-color: #ffc0cb;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
-            opacity: 1;
-            z-index: 10;
-        }
-
-        .fade-in {
-            opacity: 1 !important;
-        }
-
-        /* --- SCREEN 0: HOME PORTAL --- */
-        #home {
-            background: radial-gradient(circle at center, #050505 0%, #000 80%);
-            position: relative;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            text-align: center;
         }
 
-        .portal-ring {
-            position: absolute;
-            width: 580px;
-            height: 580px;
-            border-radius: 50%;
-            filter: blur(18px);
-            opacity: 0.18;
-            animation: pulse 4s ease-in-out infinite;
+        .card {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 90%;
+            width: 350px;
+            position: relative;
+            z-index: 1;
         }
 
-        #blueRing {
-            border: 8px solid #00eaff;
-            left: 18%;
+        h1 {
+            color: #d63384;
+            font-size: 24px;
+            margin-bottom: 10px;
         }
 
-        #redRing {
-            border: 8px solid #ff003c;
-            right: 18%;
+        p {
+            color: #888;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .heart-icon {
+            font-size: 50px;
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite;
         }
 
         @keyframes pulse {
-            0% {
-                transform: scale(0.95);
-                opacity: 0.15;
-            }
-
-            50% {
-                transform: scale(1.05);
-                opacity: 0.24;
-            }
-
-            100% {
-                transform: scale(0.95);
-                opacity: 0.15;
-            }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
-        .portal-title {
-            position: absolute;
-            top: 8%;
-            font-size: 32px;
-            letter-spacing: 4px;
-            text-align: center;
-            font-weight: 700;
-            color: #fff;
-            text-shadow: 0 0 18px #0ff, 0 0 18px #f00;
-        }
-
-        .portal-buttons {
-            z-index: 10;
+        .buttons-container {
             display: flex;
-            gap: 70px;
-        }
-
-        .portal-btn {
-            padding: 20px 40px;
-            font-size: 22px;
-            font-weight: bold;
-            cursor: pointer;
-            border: 3px solid;
-            transition: 0.26s;
-            clip-path: polygon(90% 0, 100% 18%, 100% 100%, 10% 100%, 0 82%, 0 0);
-        }
-
-        #btnSean {
-            border-color: #00eaff;
-            color: #00eaff;
-            text-shadow: 0 0 10px #00eaff;
-        }
-
-            #btnSean:hover {
-                background: rgba(0,238,255,0.2);
-                box-shadow: 0 0 20px #00eaff;
-            }
-
-        #btnNoam {
-            border-color: #ff003c;
-            color: #ff003c;
-            text-shadow: 0 0 10px #ff003c;
-        }
-
-            #btnNoam:hover {
-                background: rgba(255,0,60,0.2);
-                box-shadow: 0 0 20px #ff003c;
-            }
-
-        /* --- SCREEN 1: SEAN SYSTEM CSS --- */
-        #screenSean {
-            direction: rtl;
-            --bg-grad-sean: radial-gradient(circle at 10% 0%, #1a345a 0, transparent 55%), radial-gradient(circle at 90% 100%, #4a1638 0, transparent 55%), linear-gradient(135deg, #020308 0, #050816 60%, #020308 100%);
-            background: var(--bg-grad-sean);
-            color: #e2e8f0;
-            font-family: 'Exo 2', sans-serif;
-        }
-
-            #screenSean .sidebar {
-                width: 76px;
-                background: linear-gradient(to bottom, rgba(10, 20, 40, 0.9), rgba(5, 10, 20, 0.95));
-                border-inline-start: 1px solid rgba(148, 163, 184, 0.18);
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                padding: 16px 10px;
-                gap: 12px;
-                backdrop-filter: blur(16px);
-                box-shadow: 8px 0 30px rgba(0,0,0,0.8);
-                z-index: 20;
-                height: 100vh;
-                position: fixed;
-                right: 0;
-                top: 0;
-            }
-
-            #screenSean .main-content {
-                margin-right: 76px;
-                padding: 16px 18px;
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-                min-height: 100vh;
-            }
-
-            /* Sean Components */
-            #screenSean .logo-mark {
-                width: 42px;
-                height: 42px;
-                border-radius: 14px;
-                border: 1px solid rgba(148,163,184,0.4);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-family: 'Share Tech Mono', monospace;
-                font-size: 0.8rem;
-                color: #00f2ff;
-                box-shadow: 0 0 16px rgba(0,242,255,0.35);
-                background: radial-gradient(circle at 20% 0, rgba(0,242,255,0.25) 0, transparent 60%), rgba(15,23,42,0.9);
-            }
-
-            #screenSean .nav-btn {
-                width: 46px;
-                height: 46px;
-                border-radius: 14px;
-                border: 1px solid rgba(148,163,184,0.25);
-                background: radial-gradient(circle at 20% 0, rgba(148,163,184,0.2) 0, transparent 60%), rgba(15,23,42, 0.9);
-                color: #94a3b8;
-                font-size: 1.1rem;
-                cursor: pointer;
-                transition: 0.2s;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-                #screenSean .nav-btn:hover {
-                    color: #00f2ff;
-                    border-color: rgba(56,189,248,0.8);
-                    box-shadow: 0 0 16px rgba(56,189,248,0.4);
-                    transform: translateY(-1px);
-                }
-
-                #screenSean .nav-btn.active {
-                    color: #00ff9d;
-                    border-color: rgba(34,197,94,0.9);
-                    box-shadow: 0 0 18px rgba(34,197,94,0.45);
-                }
-
-            #screenSean .top-bar {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                margin-bottom: 4px;
-            }
-
-            #screenSean .app-title {
-                font-size: 1.2rem;
-                font-weight: 600;
-                letter-spacing: 0.12em;
-            }
-
-            #screenSean .ai-status-chip {
-                padding: 6px 10px;
-                border-radius: 999px;
-                display: inline-flex;
-                align-items: center;
-                gap: 6px;
-                border: 1px solid rgba(34,197,94,0.8);
-                background: rgba(15,23,42,0.95);
-                font-size: 0.75rem;
-                letter-spacing: 0.15em;
-            }
-
-            #screenSean .ai-dot {
-                width: 8px;
-                height: 8px;
-                border-radius: 999px;
-                background: #00ff9d;
-                box-shadow: 0 0 12px #00ff9d;
-            }
-
-            #screenSean .ticker-wrap {
-                height: 38px;
-                background: linear-gradient(90deg, rgba(15,23,42,0.95), rgba(15,23,42,0.8));
-                border-radius: 999px;
-                display: flex;
-                align-items: center;
-                overflow: hidden;
-                border: 1px solid rgba(148, 163, 184, 0.35);
-                padding-inline: 10px;
-                margin-bottom: 10px;
-            }
-
-        #ticker {
-            animation: scroll 25s linear infinite;
-            white-space: nowrap;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.85rem;
-        }
-
-        @keyframes scroll {
-            0% {
-                transform: translateX(100%);
-            }
-
-            100% {
-                transform: translateX(-100%);
-            }
-        }
-
-        #screenSean .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1.4fr 1.1fr 1.2fr;
-            grid-template-rows: 1.8fr 1fr;
-            gap: 14px;
-            min-height: 500px;
-        }
-
-        #screenSean .panel {
-            background: rgba(13, 19, 34, 0.82);
-            border-radius: 18px;
-            border: 1px solid rgba(0, 242, 255, 0.18);
-            padding: 14px 16px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 18px 45px rgba(0,0,0,0.8);
-            position: relative;
-            overflow: hidden;
-        }
-
-        #screenSean .panel-header {
-            font-size: 0.8rem;
-            color: #94a3b8;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px solid rgba(148,163,184,0.25);
-            padding-bottom: 8px;
-        }
-
-        #screenSean .asset-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 9px 4px;
-            border-bottom: 1px solid rgba(148,163,184,0.22);
-        }
-
-            #screenSean .asset-item:hover {
-                background: rgba(56,189,248,0.08);
-            }
-
-        #screenSean .btn-analyze-small {
-            background: rgba(15,23,42, 0.9);
-            border: 1px solid rgba(56,189,248,0.8);
-            color: #7dd3fc;
-            border-radius: 999px;
-            padding: 3px 10px;
-            cursor: pointer;
-            font-size: 0.72rem;
-        }
-
-            #screenSean .btn-analyze-small:hover {
-                background: #00f2ff;
-                color: #000;
-            }
-
-        #screenSean .chart-main {
-            grid-column: 1 / 3;
-            grid-row: 1 / 2;
-        }
-
-        #screenSean .controls-area {
-            grid-column: 1 / 3;
-            grid-row: 2 / 3;
-            display: grid;
-            grid-template-columns: 1.1fr 1fr;
-            gap: 14px;
-        }
-
-        #screenSean .log-panel {
-            grid-column: 3 / 4;
-            grid-row: 1 / 3;
-        }
-
-        #logs {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 0.78rem;
-            color: #9ca3af;
-            overflow-y: auto;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        /* Sean Modal */
-        #predictionModal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(3,4,11, 0.93);
-            backdrop-filter: blur(14px);
-            z-index: 100;
             justify-content: center;
-            align-items: center;
-            padding: 14px;
+            gap: 20px;
+            min-height: 60px;
         }
 
-        .modal-box {
-            background: rgba(8, 12, 24, 0.95);
-            border: 1px solid rgba(56, 189, 248, 0.7);
-            width: 520px;
-            padding: 1px;
-            border-radius: 20px;
-            position: relative;
-        }
-
-        .modal-inner {
-            background: #020617;
-            padding: 24px;
-            border-radius: 20px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(148,163,184,0.35);
-            padding-bottom: 12px;
-            margin-bottom: 18px;
-        }
-
-        .prediction-badge {
-            padding: 6px 15px;
-            border-radius: 999px;
-            font-weight: bold;
-            font-size: 0.78rem;
-            border: 1px solid;
-        }
-
-        .badge-buy {
-            background: rgba(0, 255, 157, 0.15);
-            color: #00ff9d;
-            border-color: #00ff9d;
-        }
-
-        .analysis-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 18px;
-        }
-
-        .typing-container {
-            background: rgba(15,23,42,0.9);
-            border: 1px solid rgba(148,163,184,0.5);
-            padding: 12px;
-            font-family: 'Assistant', sans-serif;
-            line-height: 1.6;
-            min-height: 76px;
-            border-radius: 14px;
-            font-size: 0.85rem;
-            color: #e2e8f0;
-        }
-
-        .modal-action-btn {
-            width: 100%;
-            padding: 13px 0;
-            margin-top: 18px;
-            background: linear-gradient(90deg, #00f2ff, #00ff9d);
+        button {
+            padding: 12px 30px;
+            font-size: 18px;
             border: none;
-            font-weight: 700;
+            border-radius: 50px;
             cursor: pointer;
-            border-radius: 999px;
-            color: #020617;
-        }
-
-        /* --- SCREEN 2: NOAM SYSTEM CSS --- */
-        #screenNoam {
-            direction: rtl;
-            background-color: #0a0002;
-            color: #fff;
-            font-family: 'Rubik', sans-serif;
-            background-image: linear-gradient(rgba(255,0,60,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,0,60,0.02) 1px, transparent 1px);
-            background-size: 45px 45px;
-        }
-
-        #noamMatrixCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            opacity: 0.2;
-            filter: drop-shadow(0 0 12px #ff003c);
-            pointer-events: none;
-        }
-
-        #screenNoam .header-section {
-            text-align: center;
-            margin-top: 20px;
-            z-index: 2;
-            position: relative;
-        }
-
-        #screenNoam .glitch-title {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 32px;
-            letter-spacing: 4px;
-            color: #fff;
-            padding: 5px 25px;
-            background: #0a0002;
-            border: 2px solid #ff003c;
-            text-shadow: 2px 0 #ff003c, -2px 0 #ff002a;
-            box-shadow: 0 0 20px rgba(255,0,60,0.4);
-            display: inline-block;
-        }
-
-        #screenNoam .cyber-grid {
-            width: 94vw;
-            min-height: 82vh;
-            margin: 30px auto;
-            padding: 28px;
-            background: rgba(10,0,2,0.75);
-            border: 2px solid #ff003c;
-            box-shadow: 0 0 28px rgba(255,0,60,0.3);
-            display: grid;
-            grid-template-columns: 62% 38%;
-            gap: 25px;
-            clip-path: polygon(0 22px, 22px 0, calc(100% - 22px) 0, 100% 22px, 100% calc(100% - 22px), calc(100% - 22px) 100%, 22px 100%, 0 calc(100% - 22px));
-            backdrop-filter: blur(7px);
-            position: relative;
-            z-index: 2;
-        }
-
-        #screenNoam .visual-container {
-            background: radial-gradient(circle at center, #1b0106 0%, #050002 100%);
-            border: 2px solid #ff003c;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 420px;
-            overflow: hidden;
-        }
-
-        #screenNoam canvas {
-            max-width: 97%;
-            max-height: 97%;
-            border: 1px solid rgba(255,0,60,0.25);
-            image-rendering: pixelated;
-            z-index: 20;
-        }
-
-        #screenNoam .scanner {
-            position: absolute;
-            top: -20%;
-            left: 0;
-            width: 100%;
-            height: 12px;
-            background: #ff003c;
-            box-shadow: 0 0 45px #ff003c;
-            opacity: 0;
-            z-index: 50;
-        }
-
-        #screenNoam .scanning {
-            animation: scan 1.8s linear infinite;
-            opacity: 0.85;
-        }
-
-        @keyframes scan {
-            0% {
-                top: -12%;
-            }
-
-            100% {
-                top: 112%;
-            }
-        }
-
-        #screenNoam .controls-container {
-            display: flex;
-            flex-direction: column;
-            gap: 22px;
-        }
-
-        #screenNoam .panel-box {
-            border: 2px solid rgba(255,0,60,0.4);
-            background: rgba(45,0,15,0.25);
-            padding: 18px;
-            position: relative;
-        }
-
-        #screenNoam .panel-label {
-            position: absolute;
-            top: -12px;
-            right: 12px;
-            background: #0a0002;
-            padding: 0 9px;
-            font-size: 13px;
-            color: #888;
-            font-family: 'Share Tech Mono', monospace;
-            border: 1px solid #444;
-        }
-
-        #screenNoam button {
-            width: 100%;
-            padding: 16px;
-            font-size: 16px;
-            font-family: 'Rubik', sans-serif;
             font-weight: bold;
-            background: rgba(255,0,60,0.05);
-            border: 2px solid #ff003c;
-            color: #ff233e;
-            cursor: pointer;
-            margin-bottom: 12px;
-            clip-path: polygon(100% 0, 8% 0, 0 22%, 0 100%, 92% 100%, 100% 78%);
-            transition: 0.25s;
+            transition: transform 0.1s;
         }
 
-            #screenNoam button:hover {
-                background: rgba(255,0,60,0.16);
-                text-shadow: 0 0 7px #ff233e;
-                box-shadow: 0 0 20px rgba(255,0,60,0.55);
-            }
-
-            #screenNoam button:disabled {
-                opacity: 0.25;
-                border-color: #300;
-                color: #300;
-                cursor: not-allowed;
-                box-shadow: none;
-            }
-
-        #screenNoam .terminal {
-            height: 150px;
-            overflow-y: auto;
-            background: #050003;
-            padding: 12px;
-            border: 2px solid rgba(255,0,60,0.35);
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 13px;
-            color: #ccc;
+        .btn-yes {
+            background-color: #ff477e;
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 71, 126, 0.4);
         }
 
-        #screenNoam .log {
-            margin-bottom: 4px;
-            border-left: 3px solid transparent;
-            padding-left: 6px;
+        .btn-no {
+            background-color: #e0e0e0;
+            color: #555;
+            position: absolute; /* שינוי ל-absolute כדי שנוכל לשלוט עליו */
+            z-index: 1000;
         }
 
-        #screenNoam .log-sys {
-            border-color: #ff233e;
-            color: #ff233e;
-        }
-
-        #screenNoam .log-ai {
-            border-color: #ffa800;
-            color: #ffa800;
-        }
-
-        #screenNoam .log-success {
-            border-color: #0aff60;
-            color: #0aff60;
-        }
-
-        #screenNoam .ai-result {
+        #step-2 {
             display: none;
-            border: 2px solid #ff003c;
-            padding: 12px;
-            margin-top: 12px;
-            background: rgba(255,0,60,0.07);
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 14px;
         }
-
-        #screenNoam .bar-bg {
-            width: 100%;
-            height: 7px;
-            background: #300;
-            margin-top: 7px;
-        }
-
-        #screenNoam .bar-fill {
-            width: 0%;
-            height: 100%;
-            background: #ff233e;
-            box-shadow: 0 0 15px #ff233e;
-            transition: width 1s;
-        }
-
-        #screenNoam .analysis-report {
-            grid-column: 1 / -1;
-            margin-top: 25px;
-            padding-top: 25px;
-            display: grid;
-            grid-template-columns: repeat(3,1fr);
-            gap: 22px;
-            border-top: 2px solid rgba(255,0,60,0.3);
-            background: rgba(30,0,10,0.3);
-        }
-
-        #screenNoam .report-card {
-            background: rgba(20,0,5,0.7);
-            border: 2px solid rgba(255,0,60,0.3);
-            padding: 18px;
-            font-size: 14px;
-        }
-
-            #screenNoam .report-card h3 {
-                margin-top: 0;
-                border-bottom: 1px solid rgba(255,0,60,0.4);
-                padding-bottom: 6px;
-                color: #ff233e;
-                font-size: 17px;
-            }
-
-        #screenNoam .flaw-box {
-            padding: 12px;
-            border: 1px dashed #ff233e;
-            background: rgba(80,0,10,0.6);
-            color: #fff;
-            font-size: 13px;
-        }
-
-        .architect-tag {
-            position: absolute;
-            bottom: 12px;
-            left: 25px;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 12px;
-            color: #752;
-        }
-
-        .architect-name {
-            color: #ff233e;
-            text-shadow: 0 0 8px #ff233e;
-        }
-
-        /* Back Button */
-        .back-btn-container {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            z-index: 999;
-        }
-
-        .back-btn {
-            padding: 10px 20px;
-            background: rgba(0,0,0,0.8);
-            border: 1px solid #fff;
-            color: #fff;
-            cursor: pointer;
-            font-family: 'Rubik', sans-serif;
-            transition: 0.3s;
-        }
-
-            .back-btn:hover {
-                background: #fff;
-                color: #000;
-            }
     </style>
 </head>
-
 <body>
 
-    <div id="home" class="screen">
-        <div id="blueRing" class="portal-ring"></div>
-        <div id="redRing" class="portal-ring"></div>
-        <div class="portal-title">ACCESS POINT // DUAL SYSTEM ENTRY</div>
-        <div class="portal-buttons">
-            <div id="btnSean" class="portal-btn">SYSTEM SEAN</div>
-            <div id="btnNoam" class="portal-btn">SYSTEM NOAM</div>
-        </div>
-    </div>
-
-    <div id="screenSean" class="screen">
-        <div class="sidebar">
-            <div><div class="logo-mark">AI</div><div class="sidebar-label">TRADE CMD</div></div>
-            <div class="nav-section-title">MODES</div>
-            <button class="nav-btn active"><i class="fas fa-satellite-dish"></i></button>
-            <button class="nav-btn"><i class="fas fa-chart-area"></i></button>
-            <div class="sidebar-spacer"></div>
-            <div class="side-indicator">DEEP ANALYSIS</div>
-        </div>
-
-        <div class="main-content">
-            <div class="top-bar">
-                <div class="top-title-block">
-                    <div class="app-title">AI TRADECOMMAND</div>
-                    <div class="app-subtitle">ניתוח עומק חצי-אוטומטי של מניות, קריפטו ואינדקסים</div>
-                </div>
-                <div class="top-right-actions">
-                    <div class="ai-status-chip"><span class="ai-dot"></span><span>AI MODE: ACTIVE</span></div>
-                    <button class="pill-btn"><i class="fas fa-robot"></i> מצב אוטומציה</button>
-                </div>
-            </div>
-
-            <div class="ticker-wrap"><div class="ticker-label">LIVE TICKER</div><div id="ticker"></div></div>
-
-            <div class="dashboard-grid">
-                <div class="panel">
-                    <div class="panel-inner">
-                        <div class="panel-header"><span>נכסים זמינים</span><span class="panel-tag"><i class="fas fa-search"></i> WATCHLIST</span></div>
-                        <div id="assetList"></div>
-                    </div>
-                </div>
-                <div class="panel chart-main">
-                    <div class="panel-inner">
-                        <div class="panel-header"><span>ניתוח טכני</span><span class="panel-tag">REAL-TIME</span></div>
-                        <div class="chart-wrapper"><canvas id="mainChart"></canvas></div>
-                        <div class="chart-footer-row"><span>מצב תצוגה: <strong>VOL / PRICE</strong></span><span>רענון כל 0.5 שניות</span></div>
-                    </div>
-                </div>
-                <div class="panel controls-area">
-                    <div class="panel-inner">
-                        <div class="kpi-block"><div class="kpi-label">רווח יומי</div><div class="big-stat green">+$1,240.50</div><div class="kpi-sub">תיק מדומה</div></div>
-                    </div>
-                    <div class="panel-inner">
-                        <div class="kpi-block"><div class="kpi-label">עסקאות פתוחות</div><div class="big-stat white">3</div><div class="kpi-sub">מינוף: x3.2</div></div>
-                    </div>
-                </div>
-                <div class="panel log-panel">
-                    <div class="panel-inner">
-                        <div class="panel-header"><span>LIVE FEED</span><span class="panel-tag">LOG</span></div>
-                        <div id="logs"></div>
-                    </div>
-                </div>
+    <div class="card">
+        <div class="heart-icon">💖</div>
+        
+        <div id="step-1">
+            <h1>נוני, רוצה להיות הדייט שלי ליום האהבה?</h1>
+            <p>14.2.2026 💘</p>
+            
+            <div class="buttons-container">
+                <button class="btn-yes" onclick="showStep2()">כן! ✨</button>
+                <button class="btn-no" id="noBtn" 
+                    onmouseover="moveButton()" 
+                    onclick="moveButton(); return false;" 
+                    ontouchstart="moveButton(); return false;">לא</button>
             </div>
         </div>
 
-        <div class="modal-overlay" id="predictionModal">
-            <div class="modal-box">
-                <div class="modal-inner">
-                    <div class="modal-scan-line"></div>
-                    <button class="close-btn" onclick="closeSeanModal()"><i class="fas fa-times"></i></button>
-                    <div class="modal-header">
-                        <div class="modal-header-left"><small>AI PREDICTION</small><h1 id="modalTitle">NVDA</h1></div>
-                        <div id="modalBadge" class="prediction-badge badge-buy">STRONG BUY</div>
-                    </div>
-                    <div class="analysis-grid">
-                        <div class="data-point"><label>מחיר יעד</label><span id="modalTarget" style="color:#00ff9d">$148.20</span></div>
-                        <div class="data-point"><label>סיכון</label><span id="modalRisk" style="color:orange">MEDIUM</span></div>
-                        <div class="data-point"><label>וודאות</label><span id="modalConfidence">94.2%</span></div>
-                    </div>
-                    <div class="typing-container"><span id="typewriterText"></span><span style="animation: blink 1s infinite">|</span></div>
-                    <button class="modal-action-btn" onclick="closeSeanModal()">ביצוע פעולה</button>
-                </div>
+        <div id="step-2">
+            <h1>בטוחה? 😏</h1>
+            <div class="buttons-container">
+                <button class="btn-yes" onclick="sendWhatsapp()">ברור! 😍</button>
             </div>
         </div>
-
-        <div class="back-btn-container"><button class="back-btn" onclick="openScreen('home')">יציאה למסך ראשי</button></div>
-    </div>
-
-    <div id="screenNoam" class="screen">
-        <canvas id="noamMatrixCanvas"></canvas>
-        <div class="header-section"><div class="glitch-title">PROJECT: REDCORE_BREACH // NR_V2</div></div>
-
-        <div class="cyber-grid">
-            <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
-
-            <div class="visual-container">
-                <div id="scanner" class="scanner"></div>
-                <canvas id="mainCanvas"></canvas>
-                <div id="loadingText" style="position:absolute; text-align:center;">[ מערכת בהמתנה ]<br><span style="font-size:12px; color:#770000">// טען קובץ //</span></div>
-                <div class="architect-tag">SYSTEM ARCHITECT:<br><span class="architect-name">NR NOAM RAPOPORT</span></div>
-            </div>
-
-            <div class="controls-container">
-                <div class="panel-box">
-                    <span class="panel-label">ממשק פיקוד</span>
-                    <input type="file" id="uploadInput" style="display:none" accept="image/*">
-                    <button onclick="document.getElementById('uploadInput').click()">1. טען תמונת יעד</button>
-                    <button id="btnEncrypt" onclick="encryptImage()" disabled>2. בצע הצפנה (אנטרופיה)</button>
-                    <button id="btnHack" onclick="startHack()" style="border-color:#ff003c; color:#ff003c;" disabled>3. הפעל פענוח אדפטיבי</button>
-                </div>
-                <div class="panel-box">
-                    <span class="panel-label">אימות AI</span>
-                    <div style="font-size:14px; color:#AA6666;">סטטוס: <span id="aiStatus" style="color: #ff003c">לא מקוון</span></div>
-                    <div id="aiResult" class="ai-result">
-                        <div>> OBJECT: <span style="color:#fff;">VALIDATED</span></div>
-                        <div>> CONFIDENCE: <span id="aiConf">0%</span></div>
-                        <div class="bar-bg"><div id="aiBar" class="bar-fill"></div></div>
-                    </div>
-                </div>
-                <div class="panel-box" style="flex-grow:1;">
-                    <span class="panel-label">יומן REDCORE</span>
-                    <div class="terminal" id="noamTerminal"><div class="log log-sys">> INITIALIZING REDCORE...</div></div>
-                </div>
-            </div>
-
-            <div class="analysis-report">
-                <div class="report-card"><h3>✔ חוזקות (PROS)</h3><ul><li>הצפנת Chaos-Blocks בניתוק מלא.</li><li>ניוד פיקסלים במטריצת XOR-tier 3.</li><li>התכנסות מהירה (Mutator-Redline).</li></ul></div>
-                <div class="report-card"><h3>✖ חולשות (CONS)</h3><ul><li>עלות CPU גבוהה.</li><li>זמן ריצה לא דטרמיניסטי.</li></ul></div>
-                <div class="report-card"><h3>⚠ תורפה (SYSTEM FLAW)</h3><div class="flaw-box">תלות באורקל (מקור אמת). פתרון: REDCORE-INDEPENDENT CORRELATION.</div></div>
-            </div>
-        </div>
-
-        <div class="back-btn-container"><button class="back-btn" onclick="openScreen('home')">חזור למסך הראשי</button></div>
     </div>
 
     <script>
-        // --- ROUTER ---
-        function openScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => { s.classList.remove('fade-in'); s.style.display = 'none'; });
-            const t = document.getElementById(id);
-            if (t) { t.style.display = (id === 'home') ? 'flex' : 'block'; setTimeout(() => t.classList.add('fade-in'), 10); }
-        }
-        document.getElementById('btnSean').onclick = () => openScreen('screenSean');
-        document.getElementById('btnNoam').onclick = () => { openScreen('screenNoam'); if (initNoamMatrix) initNoamMatrix(); };
+        function moveButton() {
+            const btn = document.getElementById('noBtn');
+            
+            // חישוב המרחקים המקסימליים שהכפתור יכול לזוז במסך
+            const maxX = window.innerWidth - btn.offsetWidth - 20;
+            const maxY = window.innerHeight - btn.offsetHeight - 20;
 
-        // --- SEAN LOGIC ---
-        {
-            const stocks = [
-                { symbol: 'BTC', price: 94320, change: '+2.1%', name: 'Bitcoin Core' },
-                { symbol: 'NVDA', price: 142.50, change: '+0.8%', name: 'NVIDIA Corp' },
-                { symbol: 'TSLA', price: 210.20, change: '-3.2%', name: 'Tesla Inc' },
-                { symbol: 'PLTR', price: 62.40, change: '+5.5%', name: 'Palantir Tech' }
-            ];
-            const predictions = {
-                'BTC': { action: 'HOLD', badge: 'badge-hold', text: 'התנגדות ב-95k. מומלץ להמתין.' },
-                'NVDA': { action: 'BUY', badge: 'badge-buy', text: 'ביקוש חזק לשבבים. עליות צפויות.' }
-            };
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
 
-            // Populate Assets
-            const list = document.getElementById('assetList');
-            const ticker = document.getElementById('ticker');
-            if (list && ticker) {
-                stocks.forEach(s => {
-                    list.innerHTML += `<div class="asset-item"><div><div class="asset-primary">${s.symbol}</div><div class="asset-secondary">${s.name}</div></div><div class="asset-actions"><span class="asset-price">$${s.price}</span><button class="btn-analyze-small" onclick="seanAnalyze('${s.symbol}')">חיזוי</button></div></div>`;
-                    ticker.innerHTML += `<span class="ticker-item">${s.symbol} <span class="${s.change.includes('+') ? 'val-up' : 'val-down'}">${s.change}</span></span>`;
-                });
-                ticker.innerHTML += ticker.innerHTML;
-            }
-
-            // Chart
-            const ctx = document.getElementById('mainChart');
-            if (ctx) {
-                const grad = ctx.getContext('2d').createLinearGradient(0, 0, 0, 300);
-                grad.addColorStop(0, 'rgba(0,242,255,0.3)'); grad.addColorStop(1, 'rgba(0,0,0,0)');
-                const chart = new Chart(ctx, {
-                    type: 'line', data: { labels: Array(30).fill(''), datasets: [{ data: Array(30).fill(100).map(() => 100 + Math.random() * 20), borderColor: '#38bdf8', backgroundColor: grad, fill: true, tension: 0.4, pointRadius: 0 }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: true } } }
-                });
-                setInterval(() => {
-                    const d = chart.data.datasets[0].data; d.shift(); d.push(d[d.length - 1] + (Math.random() - 0.5) * 5); chart.update();
-                }, 800);
-            }
-
-            // Logs
-            const l = document.getElementById('logs');
-            setInterval(() => {
-                if (l) {
-                    const msg = ["Scanning chain...", "Analyzing sentiment...", "Updating risk..."][Math.floor(Math.random() * 3)];
-                    l.innerHTML += `<div class="log-entry"><span class="tag">></span> ${msg}</div>`;
-                    l.scrollTop = l.scrollHeight;
-                }
-            }, 3000);
-
-            // Modal
-            window.seanAnalyze = (sym) => {
-                const m = document.getElementById('predictionModal');
-                const p = predictions[sym] || predictions['NVDA'];
-                document.getElementById('modalTitle').innerText = sym;
-                document.getElementById('modalBadge').innerText = p.action;
-                document.getElementById('modalBadge').className = `prediction-badge ${p.badge}`;
-                document.getElementById('typewriterText').innerText = p.text;
-                m.style.display = 'flex';
-                setTimeout(() => document.querySelector('.modal-box').style.opacity = '1', 10);
-            };
-            window.closeSeanModal = () => {
-                document.getElementById('predictionModal').style.display = 'none';
-                document.querySelector('.modal-box').style.opacity = '0';
-            };
+            btn.style.position = 'fixed';
+            btn.style.left = randomX + 'px';
+            btn.style.top = randomY + 'px';
         }
 
-        // --- NOAM LOGIC ---
-        let initNoamMatrix;
-        {
-            const mCanvas = document.getElementById('noamMatrixCanvas');
-            const mCtx = mCanvas.getContext('2d');
-            mCanvas.width = window.innerWidth; mCanvas.height = window.innerHeight;
-            const drops = Array(Math.floor(mCanvas.width / 20)).fill(1);
+        function showStep2() {
+            document.getElementById('step-1').style.display = 'none';
+            document.getElementById('step-2').style.display = 'block';
+        }
 
-            initNoamMatrix = function () {
-                // Resize handling could go here
-            };
-
-            function drawMatrix() {
-                mCtx.fillStyle = 'rgba(0,0,0,0.05)'; mCtx.fillRect(0, 0, mCanvas.width, mCanvas.height);
-                mCtx.fillStyle = '#ff003c'; mCtx.font = '15px monospace';
-                drops.forEach((y, i) => {
-                    const t = '01XNR'[Math.floor(Math.random() * 5)];
-                    mCtx.fillText(t, i * 20, y * 20);
-                    if (y * 20 > mCanvas.height && Math.random() > 0.98) drops[i] = 0;
-                    drops[i]++;
-                });
-            }
-            setInterval(drawMatrix, 50);
-
-            const canvas = document.getElementById('mainCanvas');
-            const ctx = canvas.getContext('2d');
-            let origData = null, scrambled = [], bSize = 25;
-
-            function noamLog(msg, type = 'sys') {
-                const t = document.getElementById('noamTerminal');
-                t.innerHTML += `<div class="log log-${type}">> ${msg}</div>`;
-                t.scrollTop = t.scrollHeight;
-            }
-
-            document.getElementById('uploadInput').addEventListener('change', (e) => {
-                const r = new FileReader();
-                r.onload = (ev) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        let w = img.width, h = img.height, max = 600;
-                        if (w > max || h > max) { const r = Math.min(max / w, max / h); w *= r; h *= r; }
-                        canvas.width = w; canvas.height = h;
-                        ctx.drawImage(img, 0, 0, w, h);
-                        origData = ctx.getImageData(0, 0, w, h);
-                        document.getElementById('loadingText').style.display = 'none';
-                        document.getElementById('btnEncrypt').disabled = false;
-                        noamLog('Target buffer loaded.', 'sys');
-                    };
-                    img.src = ev.target.result;
-                };
-                r.readAsDataURL(e.target.files[0]);
-            });
-
-            window.encryptImage = () => {
-                noamLog('Encrypting entropy...', 'warn');
-                const cols = Math.ceil(canvas.width / bSize), rows = Math.ceil(canvas.height / bSize);
-                scrambled = [];
-                for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) scrambled.push({ ox: x * bSize, oy: y * bSize, cx: x * bSize, cy: y * bSize });
-                for (let i = scrambled.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    let t = { cx: scrambled[i].cx, cy: scrambled[i].cy };
-                    scrambled[i].cx = scrambled[j].cx; scrambled[i].cy = scrambled[j].cy;
-                    scrambled[j].cx = t.cx; scrambled[j].cy = t.cy;
-                }
-                const temp = document.createElement('canvas'); temp.width = canvas.width; temp.height = canvas.height;
-                temp.getContext('2d').putImageData(origData, 0, 0);
-                ctx.fillStyle = '#000'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-                scrambled.forEach(b => ctx.drawImage(temp, b.ox, b.oy, bSize, bSize, b.cx, b.cy, bSize, bSize));
-                document.getElementById('btnEncrypt').disabled = true;
-                document.getElementById('btnHack').disabled = false;
-                noamLog('Encryption complete.', 'warn');
-            };
-
-            window.startHack = () => {
-                noamLog('INITIATING GENETIC SOLVER...', 'sys');
-                document.getElementById('btnHack').disabled = true;
-                let wrong = scrambled.filter(b => b.ox !== b.cx || b.oy !== b.cy);
-                const temp = document.createElement('canvas'); temp.width = canvas.width; temp.height = canvas.height;
-                temp.getContext('2d').putImageData(origData, 0, 0);
-
-                function evolve() {
-                    if (wrong.length === 0) {
-                        ctx.putImageData(origData, 0, 0);
-                        noamLog('DECRYPTION SUCCESSFUL.', 'success');
-                        setTimeout(startAI, 1000);
-                        return;
-                    }
-                    let fix = Math.max(1, Math.floor(wrong.length * 0.08));
-                    for (let i = 0; i < fix; i++) {
-                        if (wrong.length === 0) break;
-                        let idx = Math.floor(Math.random() * wrong.length);
-                        let b = wrong[idx];
-                        ctx.drawImage(temp, b.ox, b.oy, bSize, bSize, b.ox, b.oy, bSize, bSize);
-                        ctx.strokeStyle = '#0aff60'; ctx.strokeRect(b.ox, b.oy, bSize, bSize);
-                        wrong.splice(idx, 1);
-                    }
-                    if (Math.random() > 0.7) noamLog('Optimizing genes...', 'sys');
-                    requestAnimationFrame(evolve);
-                }
-                evolve();
-            };
-
-            function startAI() {
-                noamLog('Connecting to Neural Net...', 'ai');
-                document.getElementById('scanner').classList.add('scanning');
-                document.getElementById('aiStatus').innerText = 'מתחבר...';
-                document.getElementById('aiStatus').style.color = '#ff233e';
-                let p = 0;
-                let int = setInterval(() => {
-                    p += 10;
-                    if (p >= 100) {
-                        clearInterval(int);
-                        document.getElementById('scanner').classList.remove('scanning');
-                        document.getElementById('aiStatus').innerText = 'מקוון - מאומת';
-                        document.getElementById('aiStatus').style.color = '#0aff60';
-                        document.getElementById('aiResult').style.display = 'block';
-                        noamLog('AI VERDICT: VALIDATED.', 'success');
-                        setTimeout(() => document.getElementById('aiBar').style.width = '99%', 100);
-                    }
-                }, 300);
-            }
+        function sendWhatsapp() {
+            const phoneNumber = "972548349998";
+            const text = "ברור נוני שלי❣️";
+            // שימוש ב-api.whatsapp.com שעובד טוב יותר במכשירים שונים
+            const url = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
         }
     </script>
 </body>
